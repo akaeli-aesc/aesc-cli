@@ -1,0 +1,239 @@
+---
+title: Install aesc CLI
+description: 'Docker setup or build from source in 5 minutes'
+---
+
+## Option 1: Docker (Recommended)
+
+<Tabs>
+  <Tab title="Docker Run">
+    ### Pull and Run
+
+    ```bash
+    # Pull latest image
+    docker pull ghcr.io/akaeli-aesc/aesc-cli:latest
+
+    # Run interactively
+    docker run -it --rm \
+      -e ANTHROPIC_API_KEY=your-key \
+      -e AESC_MODEL_NAME=claude-sonnet-4-5-20250929 \
+      ghcr.io/akaeli-aesc/aesc-cli:latest
+    ```
+
+    ### With Persistent Config
+
+    ```bash
+    docker run -it --rm \
+      -v ~/.aesc:/root/.aesc \
+      -v $(pwd)/results:/results \
+      -e ANTHROPIC_API_KEY \
+      ghcr.io/akaeli-aesc/aesc-cli:latest
+    ```
+  </Tab>
+
+  <Tab title="Docker Compose">
+    ### docker-compose.yml
+
+    ```yaml
+    version: '3.8'
+
+    services:
+      aesc:
+        image: ghcr.io/akaeli-aesc/aesc-cli:latest
+        environment:
+          - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+          - AESC_MODEL_NAME=${AESC_MODEL_NAME}
+        volumes:
+          - ~/.aesc:/root/.aesc
+          - ./results:/results
+        stdin_open: true
+        tty: true
+    ```
+
+    ### Run
+
+    ```bash
+    docker-compose run --rm aesc
+    ```
+  </Tab>
+
+  <Tab title="Wrapper Script">
+    ### Clone and Use Script
+
+    ```bash
+    # Clone repository
+    git clone https://github.com/akaeli-aesc/aesc-cli.git
+    cd aesc-cli
+
+    # Run wrapper script (auto-pulls image)
+    ./aesc
+    ```
+
+    The `aesc` script automatically:
+    - Pulls the latest image (if not present)
+    - Mounts config and results directories
+    - Passes environment variables
+    - Runs interactively
+  </Tab>
+</Tabs>
+
+## Option 2: Build from Source
+
+<Steps>
+  <Step title="Install Prerequisites">
+    <CodeGroup>
+
+    ```bash macOS
+    # Install uv (Python package manager)
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+
+    # Restart terminal
+    ```
+
+    ```bash Linux
+    # Install uv
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+
+    # Restart terminal
+    ```
+
+    ```bash Windows
+    # Install uv (PowerShell)
+    irm https://astral.sh/uv/install.ps1 | iex
+    ```
+
+    </CodeGroup>
+  </Step>
+
+  <Step title="Clone Repository">
+    ```bash
+    git clone https://github.com/akaeli-aesc/aesc-cli.git
+    cd aesc-cli
+    ```
+  </Step>
+
+  <Step title="Install Dependencies">
+    ```bash
+    uv sync
+    ```
+  </Step>
+
+  <Step title="Run aesc">
+    ```bash
+    uv run aesc
+    ```
+  </Step>
+</Steps>
+
+<Warning>
+  **Local installation limitations:**
+
+  - Security tools (nmap, sqlmap, etc.) must be installed separately
+  - Kali Linux tools not available
+  - Use Docker for full feature set
+</Warning>
+
+## Option 3: Build Docker Image
+
+```bash
+# Clone repository
+git clone https://github.com/akaeli-aesc/aesc-cli.git
+cd aesc-cli
+
+# Build image
+docker build -t aesc:latest .
+
+# Run
+docker run -it --rm aesc:latest
+```
+
+## System Requirements
+
+<AccordionGroup>
+  <Accordion title="Docker Installation">
+    **Minimum:**
+    - 4GB RAM
+    - 2 CPU cores
+    - 10GB disk space
+
+    **Recommended:**
+    - 8GB+ RAM
+    - 4+ CPU cores
+    - 20GB+ disk space
+  </Accordion>
+
+  <Accordion title="Native Installation">
+    **Requirements:**
+    - Python 3.13+
+    - Linux, macOS, or Windows (WSL2)
+    - 2GB+ RAM
+    - 500MB disk space (native install)
+    - Note: Security tools must be installed separately
+  </Accordion>
+</AccordionGroup>
+
+## Available Images
+
+<CardGroup cols={2}>
+  <Card title="latest" icon="tag">
+    ```
+    ghcr.io/akaeli-aesc/aesc-cli:latest
+    ```
+    Always points to the most recent stable release
+  </Card>
+
+  <Card title="main" icon="code-branch">
+    ```
+    ghcr.io/akaeli-aesc/aesc-cli:main
+    ```
+    Latest from main branch (may be unstable)
+  </Card>
+
+  <Card title="version tags" icon="tags">
+    ```
+    ghcr.io/akaeli-aesc/aesc-cli:0.1.0-beta
+    ```
+    Specific version for reproducibility
+  </Card>
+
+  <Card title="commit hash" icon="hashtag">
+    ```
+    ghcr.io/akaeli-aesc/aesc-cli:sha-abc1234
+    ```
+    Specific commit (debugging)
+  </Card>
+</CardGroup>
+
+## Verification
+
+After installation, verify aesc is working:
+
+```bash
+# Check version
+aesc --version
+
+# Show help
+aesc --help
+
+# Test with a simple command
+aesc -c "help me get started"
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Quick Start"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Your first aesc command in 5 minutes
+  </Card>
+  <Card
+    title="Configuration"
+    icon="gear"
+    href="/configuration"
+  >
+    Configure LLM providers and settings
+  </Card>
+</CardGroup>

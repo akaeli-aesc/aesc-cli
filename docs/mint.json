@@ -1,0 +1,117 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "aesc CLI",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#6d28d9",
+    "light": "#8b5cf6",
+    "dark": "#5b21b6",
+    "background": {
+      "dark": "#0A0A0A",
+      "light": "#FFFFFF"
+    },
+    "anchors": {
+      "from": "#6d28d9",
+      "to": "#7c3aed"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/akaeli-aesc/aesc-cli"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Get Started",
+    "url": "https://github.com/akaeli-aesc/aesc-cli/releases"
+  },
+  "tabs": [
+    {
+      "name": "Guides",
+      "url": "guides"
+    },
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    },
+    {
+      "name": "Features",
+      "url": "features"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "Community",
+      "icon": "discord",
+      "url": "https://discord.gg/akaeli"
+    },
+    {
+      "name": "Blog",
+      "icon": "newspaper",
+      "url": "https://akaeli.com/blog"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "introduction",
+        "quickstart",
+        "installation",
+        "configuration"
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/docker-usage",
+        "guides/llm-providers",
+        "guides/security-best-practices",
+        "guides/troubleshooting"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/overview",
+        "api-reference/cli-commands",
+        "api-reference/agents",
+        "api-reference/tools",
+        "api-reference/configuration-file"
+      ]
+    },
+    {
+      "group": "Features",
+      "pages": [
+        "features/risk-based-approvals",
+        "features/kali-tools",
+        "features/kali-docs-search"
+      ]
+    },
+    {
+      "group": "Advanced",
+      "pages": [
+        "advanced/development",
+        "advanced/contributing",
+        "advanced/architecture"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/akaeli-aesc",
+    "twitter": "https://twitter.com/akaeli_dev",
+    "linkedin": "https://linkedin.com/company/akaeli"
+  },
+  "feedback": {
+    "thumbsRating": true,
+    "suggestEdit": true,
+    "raiseIssue": true
+  },
+  "search": {
+    "prompt": "Search documentation..."
+  }
+}

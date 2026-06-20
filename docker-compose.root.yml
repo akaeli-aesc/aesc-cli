@@ -1,0 +1,104 @@
+# ⚠️⚠️⚠️ DANGER: ROOT MODE ⚠️⚠️⚠️
+#
+# This configuration runs ash as ROOT (uid=0) inside the container.
+#
+# ⚠️ ONLY USE IN ISOLATED LAB ENVIRONMENTS
+#
+# Security Warnings:
+# - You have FULL root access inside the container
+# - Container escape vulnerabilities are more dangerous
+# - Network MUST be isolated from production
+# - Do NOT use on shared infrastructure
+# - Do NOT use with access to sensitive data
+#
+# When to use:
+# ✅ Isolated lab testing
+# ✅ Testing tools that absolutely require root (rare)
+# ✅ Fully understand the security implications
+#
+# When NOT to use:
+# ❌ Production systems
+# ❌ Shared infrastructure
+# ❌ Any network connected to production
+# ❌ "Just because it's easier" - use user mode instead!
+#
+# 99% of tools work in user mode with NET_RAW + NET_ADMIN capabilities.
+# Use docker-compose.yml (user mode) instead unless you have a specific need.
+#
+# To confirm you understand the risks, you must explicitly uncomment
+# the user line below:
+
+services:
+  aesc:
+    build: .
+    image: aesc:latest
+    stdin_open: true
+    tty: true
+
+    # ⚠️ WARNING: Running as root - uncomment the line below to enable
+    # By requiring manual uncomment, we ensure you've read the warnings above
+    user: "0:0"   # ⚠️ DANGER: This line makes you root!
+
+    # Mount volumes - ROOT mode uses different paths
+    volumes:
+      # Results directory
+      - ./results:/results
+
+      # Config for root mode - separate to avoid conflicts with user mode
+      # Saved in source directory as .aesc/.root/
+      - ./.aesc/.root:/root/.ash
+
+      # Root's cache directory
+      - ./.aesc/.root/.cache:/root/.cache
+
+      # Optional: Mount current directory
+      # - ./:/workspace
+
+    # Working directory
+    working_dir: /opt/aesc
+
+    # Network configuration
+    network_mode: host
+
+    # Enable host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    # Environment variables
+    environment:
+      # Root uses /root as HOME
+      - HOME=/root
+      - USER=root
+      - LOGNAME=root
+
+      # LLM Configuration
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-your-key-here}
+      - AESC_MODEL_NAME=${AESC_MODEL_NAME:-claude-sonnet-4-5-20250929}
+
+      # ASH configuration
+      - AESC_IN_DOCKER=1
+      - AESC_ROOT_MODE=1
+      - PYTHONUNBUFFERED=1
+
+    # All capabilities (root mode)
+    cap_add:
+      - ALL
+
+    # Privileged mode for maximum compatibility
+    # ⚠️ EXTREMELY DANGEROUS - Only use in isolated lab
+    # Uncomment ONLY if you absolutely need it:
+    # privileged: true
+
+# NOTE:
+# - This file is for advanced users who need full root access
+# - Use docker-compose.yml (user mode + capabilities) for normal use
+# - Root mode is NOT recommended for production or shared environments
+#
+# Usage:
+#   docker-compose -f docker-compose.root.yml run --rm ash
+#
+# Before running, ensure:
+# ✅ Network is isolated from production
+# ✅ You understand the security risks
+# ✅ You have a legitimate need for root access
+# ✅ User mode with capabilities won't work for your use case

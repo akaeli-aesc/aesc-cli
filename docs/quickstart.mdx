@@ -1,0 +1,196 @@
+---
+title: Quick Start - 5 Min Setup
+description: 'Your first security scan in under 5 minutes'
+---
+
+## Prerequisites
+
+<CardGroup cols={2}>
+  <Card title="Docker" icon="docker">
+    Docker installed ([Get Docker](https://docs.docker.com/get-docker/))
+  </Card>
+  <Card title="LLM API Key" icon="key">
+    Anthropic Claude, OpenAI, or Ollama
+  </Card>
+</CardGroup>
+
+## Installation
+
+<Steps>
+  <Step title="Pull Docker Image">
+    ```bash
+    docker pull ghcr.io/akaeli-aesc/aesc-cli:latest
+    ```
+  </Step>
+
+  <Step title="Set API Key">
+    <CodeGroup>
+
+    ```bash Anthropic Claude
+    export ANTHROPIC_API_KEY=sk-ant-your-key-here
+    export AESC_MODEL_NAME=claude-sonnet-4-5-20250929
+    ```
+
+    ```bash OpenAI
+    export OPENAI_API_KEY=sk-your-key-here
+    export AESC_MODEL_NAME=gpt-4
+    ```
+
+    ```bash Ollama (Local)
+    export OLLAMA_BASE_URL=http://localhost:11434/v1
+    export AESC_MODEL_NAME=llama3
+    ```
+
+    </CodeGroup>
+  </Step>
+
+  <Step title="Run aesc">
+    ```bash
+    docker run -it --rm \
+      -e ANTHROPIC_API_KEY \
+      -e AESC_MODEL_NAME \
+      ghcr.io/akaeli-aesc/aesc-cli:latest
+    ```
+  </Step>
+</Steps>
+
+## Your First Command
+
+<Tabs>
+  <Tab title="Interactive Mode">
+    ```bash
+    aesc
+    > scan 192.168.1.1 for open ports
+    ```
+
+    aesc will:
+    1. Understand your intent
+    2. Plan the nmap command
+    3. Ask for your approval
+    4. Execute and show results
+  </Tab>
+
+  <Tab title="Command Mode">
+    ```bash
+    aesc -c "scan 192.168.1.1 for open ports"
+    ```
+
+    One-shot command execution with approval.
+  </Tab>
+
+  <Tab title="Auto-Approve (Careful!)">
+    ```bash
+    aesc --yolo -c "quick port scan of 192.168.1.1"
+    ```
+
+    <Warning>
+      Skip approval prompts. **Use only on trusted targets!**
+    </Warning>
+  </Tab>
+</Tabs>
+
+## Example Workflows
+
+### Network Reconnaissance
+
+```bash
+aesc -c "scan 192.168.1.0/24 and identify services"
+```
+
+aesc will:
+- Run nmap service detection
+- Parse results
+- Identify potential vulnerabilities
+- Suggest next steps
+
+### Web Application Testing
+
+```bash
+aesc -c "check example.com for common vulnerabilities"
+```
+
+aesc will:
+- Enumerate subdomains
+- Check for known CVEs
+- Test common attack vectors
+- Generate a report
+
+### MITRE ATT&CK Intelligence
+
+```bash
+aesc -c "lookup MITRE technique T1003"
+aesc -c "what tactics does APT29 use?"
+```
+
+aesc can query the MITRE ATT&CK framework for threat intelligence.
+
+## Configuration
+
+<Info>
+  aesc stores configuration in `~/.aesc/config.json` (JSON format)
+
+  Use the interactive setup:
+  ```bash
+  aesc
+  > /setup
+  ```
+</Info>
+
+### Example config.json
+
+```json
+{
+  "providers": {
+    "anthropic": {
+      "type": "anthropic",
+      "api_key": "sk-ant-..."
+    },
+    "ollama": {
+      "type": "openai_legacy",
+      "base_url": "http://localhost:11434/v1",
+      "api_key": "ollama"
+    }
+  },
+  "models": {
+    "default": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-5-20250929",
+      "max_context_size": 200000
+    }
+  },
+  "default_model": "default"
+}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Docker Usage Guide"
+    icon="docker"
+    href="/guides/docker-usage"
+  >
+    Advanced Docker configuration
+  </Card>
+  <Card
+    title="LLM Providers"
+    icon="brain"
+    href="/guides/llm-providers"
+  >
+    Configure different LLM providers
+  </Card>
+  <Card
+    title="Security Best Practices"
+    icon="shield"
+    href="/guides/security-best-practices"
+  >
+    Use aesc safely and responsibly
+  </Card>
+  <Card
+    title="CLI Commands"
+    icon="terminal"
+    href="/api-reference/cli-commands"
+  >
+    Complete command reference
+  </Card>
+</CardGroup>

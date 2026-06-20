@@ -1,0 +1,9 @@
+{
+  "endpoints": [
+    "/note"
+  ],
+  "vulns": [
+    "xss"
+  ]
+}
+

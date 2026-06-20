@@ -1,0 +1,115 @@
+version: 1
+agent:
+  name: "weaponization_agent"
+
+  system_prompt_path: ./system.md
+
+  system_prompt_args:
+    STAGE: "Weaponization"
+    STAGE_NUMBER: "2"
+    FOCUS: "Prepare exploit payloads and attack tools based on reconnaissance findings"
+
+  tools:
+    - "aesc.tools.bash:Bash"
+    - "aesc.tools.file:ReadFile"
+    - "aesc.tools.file:WriteFile"
+    - "aesc.tools.file:Glob"
+    - "aesc.tools.file:Grep"
+    - "aesc.tools.mitre_attack:MitreAttack"
+    - "aesc.tools.kali_docs:KaliDocs"
+    - "aesc.tools.web:SearchWeb"
+    - "aesc.tools.web:FetchURL"
+    - "aesc.tools.think:Think"
+    - "aesc.tools.todo:SetTodoList"
+    # Results tools for agent communication
+    - "aesc.tools.results:WriteFinding"
+    - "aesc.tools.results:WriteDecision"
+    - "aesc.tools.results:ReadGuidance"
+
+  exclude_tools: []
+
+  metadata:
+    stage: 2
+    stage_name: "Weaponization"
+    phase: "IN"
+
+    description: |
+      Red Team weaponization specialist responsible for preparing exploits,
+      generating payloads, and developing attack tools based on reconnaissance
+      findings. Covers MITRE ATT&CK tactic TA0042 (Resource Development).
+
+    mitre_tactics:
+      - "TA0042"  # Resource Development
+
+    primary_techniques:
+      exploit_development:
+        - "T1587"      # Develop Capabilities
+        - "T1587.001"  # Malware
+        - "T1587.003"  # Digital Certificates
+        - "T1587.004"  # Exploits
+
+      capability_acquisition:
+        - "T1588"      # Obtain Capabilities
+        - "T1588.001"  # Malware
+        - "T1588.002"  # Tool
+        - "T1588.005"  # Exploits
+        - "T1588.006"  # Vulnerabilities
+
+      staging:
+        - "T1608"      # Stage Capabilities
+        - "T1608.001"  # Upload Malware
+        - "T1608.002"  # Upload Tool
+        - "T1608.003"  # Install Digital Certificate
+        - "T1608.004"  # Drive-by Target
+        - "T1608.005"  # Link Target
+
+    capabilities:
+      payload_generation:
+        - "Msfvenom payload creation"
+        - "Custom shellcode development"
+        - "Reverse shell generation"
+        - "Bind shell preparation"
+        - "Web shell creation"
+        - "Staged vs stageless payloads"
+
+      exploit_customization:
+        - "Exploit modification for target environment"
+        - "Shellcode encoding and obfuscation"
+        - "Payload encryption"
+        - "Anti-AV techniques"
+        - "Sandbox evasion"
+
+      evasion_techniques:
+        - "Code signing"
+        - "Packing and crypting"
+        - "Fileless payload techniques"
+        - "Living-off-the-land binaries (LOLBins)"
+        - "Memory-only execution"
+
+    tools_reference:
+      payload_generation:
+        - "msfvenom"
+        - "msfconsole"
+        - "Veil-Evasion"
+        - "Shellter"
+        - "Unicorn"
+
+      exploit_frameworks:
+        - "Metasploit"
+        - "ExploitDB"
+        - "SearchSploit"
+        - "Custom scripts"
+
+      evasion:
+        - "Donut"
+        - "Scarecrow"
+        - "PEzor"
+        - "Nim payloads"
+
+    output_format:
+      structure:
+        - "payload_specifications"
+        - "exploit_details"
+        - "evasion_techniques_used"
+        - "delivery_recommendations"
+        - "mitre_techniques_used"

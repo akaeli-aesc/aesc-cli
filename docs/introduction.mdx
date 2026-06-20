@@ -1,0 +1,143 @@
+---
+title: aesc CLI - AI Security Agent
+description: 'AI-powered CLI for penetration testing and security operations'
+---
+
+## Welcome to aesc CLI
+
+**aesc** is an AI-powered CLI agent that can autonomously perform security operations and penetration testing tasks. It provides a natural language interface to security tools like nmap, sqlmap, metasploit, and more.
+
+<CardGroup cols={2}>
+  <Card
+    title="Quick Start"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Get started with aesc in under 5 minutes
+  </Card>
+  <Card
+    title="Installation"
+    icon="download"
+    href="/installation"
+  >
+    Install with Docker or native setup
+  </Card>
+  <Card
+    title="Guides"
+    icon="book"
+    href="/guides/docker-usage"
+  >
+    Step-by-step tutorials and best practices
+  </Card>
+  <Card
+    title="API Reference"
+    icon="code"
+    href="/api-reference/cli-commands"
+  >
+    Complete CLI commands and API documentation
+  </Card>
+</CardGroup>
+
+## Why aesc?
+
+<AccordionGroup>
+  <Accordion title="🤖 Natural Language Interface">
+    Describe tasks in plain English. No need to remember complex command syntax.
+
+    ```bash
+    aesc -c "scan 192.168.1.1 for open ports"
+    aesc -c "analyze this web application for vulnerabilities"
+    ```
+  </Accordion>
+
+  <Accordion title="🛡️ Built-in Approval System">
+    Review every command before execution. Safety first.
+
+    ```
+    [aesc] Planning to execute: nmap -sV 192.168.1.1
+    Approve? [y/N]:
+    ```
+  </Accordion>
+
+  <Accordion title="🐧 Kali Linux Integration">
+    Runs in Kali container with 600+ security tools pre-installed.
+  </Accordion>
+
+  <Accordion title="🌐 LLM-Agnostic">
+    Works with Ollama (local), OpenAI, Anthropic Claude, and more.
+  </Accordion>
+</AccordionGroup>
+
+## Features
+
+<CardGroup cols={3}>
+  <Card title="🎯 MITRE ATT&CK" icon="crosshairs">
+    Query threat intelligence and attack patterns
+  </Card>
+  <Card title="📚 Kali Docs Search" icon="search">
+    Built-in tool documentation lookup
+  </Card>
+  <Card title="📊 Results Management" icon="folder">
+    Automatic scan result collection and reporting
+  </Card>
+  <Card title="🐚 Native Execution" icon="terminal">
+    Direct subprocess calls, no HTTP overhead
+  </Card>
+  <Card title="📝 Session Management" icon="clock">
+    Context-aware conversations
+  </Card>
+  <Card title="🔧 Extensible" icon="puzzle-piece">
+    Easy to add new security tools
+  </Card>
+</CardGroup>
+
+## Quick Example
+
+<CodeGroup>
+
+```bash Interactive Mode
+aesc
+> scan 192.168.1.1 for open ports
+```
+
+```bash Command Mode
+aesc -c "scan 192.168.1.0/24 and identify services"
+```
+
+```bash Docker
+docker run -it --rm \
+  -e ANTHROPIC_API_KEY=your-key \
+  ghcr.io/akaeli-aesc/aesc-cli:latest
+```
+
+</CodeGroup>
+
+## Security Notice
+
+<Warning>
+  **aesc is designed for authorized security testing only.**
+
+  - ✅ Always get authorization before scanning/testing any system
+  - ✅ Use the approval system - review commands before execution
+  - ✅ Follow responsible disclosure practices
+  - ✅ Comply with laws and regulations
+</Warning>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Install aesc"
+    icon="download"
+    href="/installation"
+  >
+    Get aesc running on your system
+  </Card>
+  <Card
+    title="Quick Start Guide"
+    icon="bolt"
+    href="/quickstart"
+  >
+    Your first aesc command in 5 minutes
+  </Card>
+</CardGroup>

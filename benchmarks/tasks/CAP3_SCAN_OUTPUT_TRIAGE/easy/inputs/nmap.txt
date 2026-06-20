@@ -1,0 +1,13 @@
+# Nmap 7.95 scan initiated 2025-12-01 as: nmap -sV -sC -p 22,80,443 192.168.56.10
+Nmap scan report for 192.168.56.10
+Host is up (0.0010s latency).
+
+PORT    STATE SERVICE  VERSION
+22/tcp  open  ssh      OpenSSH 8.9p1 Ubuntu 3ubuntu0.7 (Ubuntu Linux; protocol 2.0)
+80/tcp  open  http     Apache httpd 2.4.49 ((Unix))
+443/tcp open  ssl/http Apache httpd 2.4.49 ((Unix))
+
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+# Nmap done.
+

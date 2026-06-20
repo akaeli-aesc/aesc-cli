@@ -1,0 +1,63 @@
+# .dockerignore for ASH
+# Exclude unnecessary files from Docker build context
+
+# Version control
+.git
+.gitignore
+.github
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist
+build
+.venv
+venv
+ENV
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov
+.tox
+.inline-snapshot
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Documentation (already in image from COPY)
+*.md
+!README.md
+!CHANGELOG.md
+docs/decisions
+docs/implementation
+
+# Development files
+CLAUDE.md
+FIRST_TASK.md
+DEVELOPMENT.md
+REPOSITORY_SETUP.md
+
+# Local config and results
+config/
+results/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.old

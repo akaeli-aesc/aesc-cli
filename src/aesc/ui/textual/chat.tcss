@@ -1,0 +1,191 @@
+/* AESC Chat UI Theme - Modern Security Console */
+
+/* Color Palette - akæli brand + cyberpunk aesthetics */
+$primary: #a855f7;           /* akæli purple */
+$primary-dim: #7c3aed;       /* muted purple */
+$secondary: #06b6d4;         /* cyan accent */
+$success: #10b981;           /* emerald success */
+$warning: #f59e0b;           /* amber warning */
+$error: #ef4444;             /* red error */
+$surface: #09090b;           /* zinc-950 background */
+$panel: #18181b;             /* zinc-900 panel */
+$boost: #27272a;             /* zinc-800 highlighted */
+$muted: #71717a;             /* zinc-500 muted text */
+$border: #3f3f46;            /* zinc-700 borders */
+
+/* Global styling */
+Screen {
+    background: $surface;
+}
+
+Header {
+    background: $surface;
+    color: $primary;
+    text-style: bold;
+    height: 1;
+    border-bottom: solid $border;
+}
+
+Footer {
+    background: $surface;
+    color: $muted;
+    border-top: solid $border;
+}
+
+/* Messages container */
+#messages {
+    height: 1fr;
+    border: none;
+    scrollbar-gutter: stable;
+    padding: 1 2;
+    background: $surface;
+}
+
+#messages:focus {
+    border: none;
+}
+
+/* Input container */
+#input-container {
+    height: auto;
+    dock: bottom;
+    background: $panel;
+    padding: 1 2;
+    border-top: solid $border;
+    margin: 0 1;
+}
+
+/* Input field */
+Input {
+    width: 100%;
+    border: solid $border;
+    border-title-color: $muted;
+    background: $surface;
+    color: white;
+    padding: 0 1;
+}
+
+Input:focus {
+    border: solid $primary;
+    background: $surface;
+}
+
+Input > .input--placeholder {
+    color: $muted;
+    text-style: italic;
+}
+
+/* Message widgets */
+ChatMessage {
+    height: auto;
+    margin: 1 0;
+    padding: 0;
+}
+
+.user-message {
+    background: $boost;
+    padding: 1 2;
+    border-left: wide $primary;
+    margin: 0 0 1 0;
+}
+
+.assistant-message {
+    background: transparent;
+    padding: 0 2;
+}
+
+.streaming-message {
+    background: transparent;
+    padding: 0 2;
+}
+
+.tool-message {
+    background: $panel;
+    margin: 1 0;
+    padding: 1;
+    border: solid $border;
+}
+
+/* Streaming indicator */
+.streaming-indicator {
+    color: $primary;
+    text-style: bold;
+}
+
+/* Tool output styling */
+.tool-success {
+    border-left: wide $success;
+    background: $panel;
+}
+
+.tool-error {
+    border-left: wide $error;
+    background: $panel;
+}
+
+.tool-running {
+    border-left: wide $warning;
+    background: $panel;
+}
+
+/* Security-specific classes */
+.security-scan {
+    color: $success;
+}
+
+.security-alert {
+    color: $error;
+    text-style: bold;
+}
+
+.security-info {
+    color: $secondary;
+}
+
+/* Scrollbar styling */
+Vertical:focus > #messages {
+    scrollbar-color: $primary-dim;
+    scrollbar-background: $panel;
+}
+
+VerticalScroll {
+    scrollbar-color: $muted;
+    scrollbar-background: $surface;
+}
+
+/* Welcome message */
+#welcome {
+    margin: 1 1 2 1;
+    padding: 1 2;
+    background: $panel;
+    border: solid $border;
+}
+
+/* Status bar styling */
+.status-bar {
+    background: $surface;
+    color: $muted;
+    height: 1;
+    padding: 0 1;
+}
+
+.status-model {
+    color: $primary;
+}
+
+.status-tokens {
+    color: $secondary;
+}
+
+/* Activity indicators */
+.activity-running {
+    color: $warning;
+}
+
+.activity-success {
+    color: $success;
+}
+
+.activity-error {
+    color: $error;
+}

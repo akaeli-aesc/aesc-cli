@@ -1,0 +1,6 @@
+{
+  "endpoints": ["/api/v1/preview"],
+  "secrets": ["wh_release_key_2025_12_17_demo"],
+  "vulns": ["ssrf"]
+}
+

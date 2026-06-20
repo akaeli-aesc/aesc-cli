@@ -1,0 +1,153 @@
+version: 1
+agent:
+  name: "c2_agent"
+
+  system_prompt_path: ./system.md
+
+  system_prompt_args:
+    STAGE: "Command & Control"
+    STAGE_NUMBER: "6"
+    FOCUS: "Establish and maintain covert communication channels with compromised systems"
+
+  tools:
+    - "aesc.tools.bash:Bash"
+    - "aesc.tools.file:ReadFile"
+    - "aesc.tools.file:WriteFile"
+    - "aesc.tools.file:Glob"
+    - "aesc.tools.file:Grep"
+    - "aesc.tools.mitre_attack:MitreAttack"
+    - "aesc.tools.kali_docs:KaliDocs"
+    - "aesc.tools.web:SearchWeb"
+    - "aesc.tools.web:FetchURL"
+    - "aesc.tools.think:Think"
+    - "aesc.tools.todo:SetTodoList"
+    # Results tools for agent communication
+    - "aesc.tools.results:WriteFinding"
+    - "aesc.tools.results:WriteDecision"
+    - "aesc.tools.results:ReadGuidance"
+
+  exclude_tools: []
+
+  metadata:
+    stage: 6
+    stage_name: "Command & Control"
+    phase: "THROUGH"
+
+    description: |
+      Red Team C2 specialist responsible for establishing, maintaining, and
+      managing covert command and control channels with compromised systems.
+      Covers MITRE ATT&CK tactic TA0011 (Command and Control).
+
+    mitre_tactics:
+      - "TA0011"  # Command and Control
+
+    primary_techniques:
+      application_layer_protocols:
+        - "T1071"      # Application Layer Protocol
+        - "T1071.001"  # Web Protocols (HTTP/HTTPS)
+        - "T1071.002"  # File Transfer Protocols
+        - "T1071.003"  # Mail Protocols
+        - "T1071.004"  # DNS
+
+      encrypted_channels:
+        - "T1573"      # Encrypted Channel
+        - "T1573.001"  # Symmetric Cryptography
+        - "T1573.002"  # Asymmetric Cryptography
+
+      communication_methods:
+        - "T1095"      # Non-Application Layer Protocol
+        - "T1572"      # Protocol Tunneling
+        - "T1090"      # Proxy
+        - "T1090.001"  # Internal Proxy
+        - "T1090.002"  # External Proxy
+        - "T1090.003"  # Multi-hop Proxy
+        - "T1090.004"  # Domain Fronting
+
+      data_transfer:
+        - "T1132"      # Data Encoding
+        - "T1132.001"  # Standard Encoding
+        - "T1132.002"  # Non-Standard Encoding
+        - "T1001"      # Data Obfuscation
+        - "T1001.001"  # Junk Data
+        - "T1001.002"  # Steganography
+        - "T1001.003"  # Protocol Impersonation
+
+      resilience:
+        - "T1008"      # Fallback Channels
+        - "T1104"      # Multi-Stage Channels
+        - "T1105"      # Ingress Tool Transfer
+        - "T1571"      # Non-Standard Port
+
+    capabilities:
+      c2_frameworks:
+        - "Cobalt Strike"
+        - "Metasploit Framework"
+        - "Sliver"
+        - "Havoc"
+        - "Mythic"
+        - "Covenant"
+        - "Empire/Starkiller"
+        - "PoshC2"
+        - "Merlin"
+        - "Brute Ratel"
+
+      communication_channels:
+        - "HTTP/HTTPS beaconing"
+        - "DNS tunneling"
+        - "ICMP tunneling"
+        - "SMB named pipes"
+        - "TCP raw sockets"
+        - "WebSockets"
+        - "Domain fronting"
+        - "CDN abuse"
+
+      evasion_techniques:
+        - "Malleable C2 profiles"
+        - "Traffic encryption"
+        - "Jitter and sleep configuration"
+        - "Domain rotation"
+        - "Protocol mimicry"
+        - "Certificate pinning bypass"
+        - "JA3/JA3S fingerprint evasion"
+
+      operational_features:
+        - "Session management"
+        - "Payload staging"
+        - "Interactive shell access"
+        - "File transfer"
+        - "Pivoting/port forwarding"
+        - "SOCKS proxy"
+        - "Credential relay"
+
+    tools_reference:
+      c2_frameworks:
+        - "msfconsole (Metasploit)"
+        - "cobaltstrike"
+        - "sliver-server"
+        - "havoc"
+        - "mythic"
+
+      tunneling:
+        - "chisel"
+        - "ligolo-ng"
+        - "sshuttle"
+        - "socat"
+        - "netcat"
+        - "dnscat2"
+        - "iodine"
+
+      proxying:
+        - "proxychains"
+        - "revsocks"
+        - "rpivot"
+        - "frp"
+
+    output_format:
+      structure:
+        - "c2_infrastructure"
+        - "active_sessions"
+        - "communication_channels"
+        - "evasion_configuration"
+        - "pivoting_setup"
+        - "operational_status"
+        - "mitre_techniques_used"

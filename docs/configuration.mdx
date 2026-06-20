@@ -1,0 +1,303 @@
+---
+title: Configuration & Setup
+description: 'Configure LLM providers, API keys, and settings'
+---
+
+## Configuration File
+
+aesc stores configuration in `~/.aesc/config.json` (JSON format)
+
+### Interactive Setup
+
+```bash
+aesc
+> /setup
+```
+
+Follow the prompts to configure:
+- LLM provider (Anthropic, OpenAI, Ollama)
+- API keys
+- Default model
+- Approval settings
+
+## Example config.json
+
+```json
+{
+  "providers": {
+    "anthropic": {
+      "type": "anthropic",
+      "api_key": "sk-ant-your-key-here"
+    },
+    "openai": {
+      "type": "openai_responses",
+      "api_key": "sk-your-key-here"
+    },
+    "ollama": {
+      "type": "openai_legacy",
+      "base_url": "http://localhost:11434/v1",
+      "api_key": "ollama"
+    }
+  },
+  "models": {
+    "default": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-5-20250929",
+      "max_context_size": 200000
+    },
+    "gpt4": {
+      "provider": "openai",
+      "model": "gpt-4",
+      "max_context_size": 128000
+    },
+    "local": {
+      "provider": "ollama",
+      "model": "llama3",
+      "max_context_size": 8000
+    }
+  },
+  "default_model": "default"
+}
+```
+
+## Environment Variables
+
+<Tabs>
+  <Tab title="Anthropic Claude">
+    ```bash
+    export ANTHROPIC_API_KEY=sk-ant-your-key-here
+    export AESC_MODEL_NAME=claude-sonnet-4-5-20250929
+    ```
+
+    **Available models:**
+    - `claude-sonnet-4-5-20250929` (recommended)
+    - `claude-3-5-sonnet-20241022`
+    - `claude-3-opus-20240229`
+  </Tab>
+
+  <Tab title="OpenAI">
+    ```bash
+    export OPENAI_API_KEY=sk-your-key-here
+    export AESC_MODEL_NAME=gpt-4
+    ```
+
+    **Available models:**
+    - `gpt-4`
+    - `gpt-4-turbo`
+    - `gpt-3.5-turbo`
+  </Tab>
+
+  <Tab title="Ollama (Local)">
+    ```bash
+    export OLLAMA_BASE_URL=http://localhost:11434/v1
+    export AESC_MODEL_NAME=llama3
+    ```
+
+    **Setup Ollama:**
+    ```bash
+    # Install Ollama
+    curl -fsSL https://ollama.com/install.sh | sh
+
+    # Pull a model
+    ollama pull llama3
+
+    # Verify
+    ollama list
+    ```
+  </Tab>
+</Tabs>
+
+## LLM Provider Configuration
+
+<AccordionGroup>
+  <Accordion title="Anthropic Claude">
+    **Get API Key:**
+    1. Go to https://console.anthropic.com
+    2. Sign up or log in
+    3. Navigate to API Keys
+    4. Create a new key
+
+    **Set in aesc:**
+    ```bash
+    aesc
+    > /setup
+    # Select Anthropic → Enter API key
+    ```
+
+    **Models:**
+    - Claude Sonnet 4.5 (recommended for security tasks)
+    - Claude 3.5 Sonnet
+    - Claude 3 Opus (most capable)
+  </Accordion>
+
+  <Accordion title="OpenAI">
+    **Get API Key:**
+    1. Go to https://platform.openai.com
+    2. Sign up or log in
+    3. Navigate to API Keys
+    4. Create a new key
+
+    **Set in aesc:**
+    ```bash
+    aesc
+    > /setup
+    # Select OpenAI → Enter API key
+    ```
+
+    **Models:**
+    - GPT-4 (recommended)
+    - GPT-4 Turbo
+    - GPT-3.5 Turbo (faster, cheaper)
+  </Accordion>
+
+  <Accordion title="Ollama (Local)">
+    **Install Ollama:**
+    ```bash
+    curl -fsSL https://ollama.com/install.sh | sh
+    ```
+
+    **Pull models:**
+    ```bash
+    ollama pull llama3      # Meta Llama 3
+    ollama pull mistral     # Mistral 7B
+    ollama pull codellama   # Code Llama
+    ```
+
+    **Set in aesc:**
+    ```bash
+    aesc
+    > /setup
+    # Select Ollama → Enter base URL
+    # http://localhost:11434/v1
+    ```
+
+    **Benefits:**
+    - ✅ Free (no API costs)
+    - ✅ Private (data stays local)
+    - ✅ Fast (local inference)
+
+    **Limitations:**
+    - ❌ Requires GPU (recommended)
+    - ❌ Less capable than Claude/GPT-4
+  </Accordion>
+</AccordionGroup>
+
+## Advanced Settings
+
+### Loop Control
+
+```json
+{
+  "loop_control": {
+    "max_steps_per_run": 100,
+    "max_retries_per_step": 3
+  }
+}
+```
+
+These settings live alongside `providers`, `models`, and `default_model` in
+`~/.aesc/config.json`. See the [config.json Reference](/api-reference/configuration-file)
+for the full schema.
+
+## Docker Configuration
+
+### Volume Mounts
+
+```bash
+docker run -it --rm \
+  -v ~/.aesc:/root/.aesc \                  # Config persistence
+  -v $(pwd)/results:/results \              # Results output
+  -v $(pwd)/scans:/scans \                  # Scan data
+  ghcr.io/akaeli-aesc/aesc-cli:latest
+```
+
+### Network Configuration
+
+```bash
+# Host network (access local services)
+docker run -it --rm \
+  --network host \
+  ghcr.io/akaeli-aesc/aesc-cli:latest
+
+# Custom network
+docker network create aesc-net
+docker run -it --rm \
+  --network aesc-net \
+  ghcr.io/akaeli-aesc/aesc-cli:latest
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="API Key Not Working">
+    **Check:**
+    ```bash
+    # Verify key is set
+    echo $ANTHROPIC_API_KEY
+
+    # Test with curl
+    curl https://api.anthropic.com/v1/messages \
+      -H "x-api-key: $ANTHROPIC_API_KEY" \
+      -H "anthropic-version: 2023-06-01"
+    ```
+
+    **Solutions:**
+    - Verify key is correct (no extra spaces)
+    - Check key hasn't expired
+    - Ensure billing is enabled
+  </Accordion>
+
+  <Accordion title="Config File Not Found">
+    **Create manually:**
+    ```bash
+    mkdir -p ~/.aesc
+    nano ~/.aesc/config.json
+    ```
+
+    **Or use interactive setup:**
+    ```bash
+    aesc
+    > /setup
+    ```
+  </Accordion>
+
+  <Accordion title="Ollama Connection Failed">
+    **Check Ollama is running:**
+    ```bash
+    curl http://localhost:11434/v1/models
+    ```
+
+    **Start Ollama:**
+    ```bash
+    ollama serve
+    ```
+
+    **Docker networking:**
+    ```bash
+    # Use host network
+    docker run -it --rm \
+      --network host \
+      -e OLLAMA_BASE_URL=http://localhost:11434/v1 \
+      ghcr.io/akaeli-aesc/aesc-cli:latest
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Guides"
+    icon="book"
+    href="/guides/docker-usage"
+  >
+    Detailed configuration guides
+  </Card>
+  <Card
+    title="CLI Commands"
+    icon="terminal"
+    href="/api-reference/cli-commands"
+  >
+    Complete command reference
+  </Card>
+</CardGroup>

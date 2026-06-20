@@ -1,0 +1,5 @@
+{
+  "endpoints": ["/admin"],
+  "secrets": ["sp_release_key_2025_12_17_demo"]
+}
+

@@ -1,0 +1,210 @@
+# ASH Multi-Profile Docker Compose
+#
+# Usage:
+#   # Start reconnaissance agent
+#   docker compose -f docker-compose.profiles.yml --profile recon up
+#
+#   # Start exploitation agent
+#   docker compose -f docker-compose.profiles.yml --profile exploit up
+#
+#   # Start full agent (default)
+#   docker compose -f docker-compose.profiles.yml --profile full up
+#
+#   # Build all images
+#   docker compose -f docker-compose.profiles.yml build
+
+services:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # RECONNAISSANCE AGENT (~500MB)
+  # Stage 1: Intelligence gathering, port scanning, enumeration
+  # ═══════════════════════════════════════════════════════════════════════════
+  aesc-recon:
+    build:
+      context: .
+      dockerfile: Dockerfile.multi
+      target: aesc-recon
+    image: aesc:recon
+    profiles: ["recon", "stage1"]
+    container_name: aesc-recon
+    hostname: aesc-recon
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - AESC_MODEL_NAME=${AESC_MODEL_NAME:-}
+      - AESC_AGENT=attack_chain/reconnaissance
+    volumes:
+      - ./results:/results
+      - aesc-config:/root/.config/ash
+    networks:
+      - aesc-network
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # EXPLOITATION AGENT (~800MB)
+  # Stages 2-4: Weaponization, Delivery, Exploitation
+  # ═══════════════════════════════════════════════════════════════════════════
+  aesc-exploit:
+    build:
+      context: .
+      dockerfile: Dockerfile.multi
+      target: aesc-exploit
+    image: aesc:exploit
+    profiles: ["exploit", "stage2", "stage3", "stage4"]
+    container_name: aesc-exploit
+    hostname: aesc-exploit
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - AESC_MODEL_NAME=${AESC_MODEL_NAME:-}
+    volumes:
+      - ./results:/results
+      - aesc-config:/root/.config/ash
+    networks:
+      - aesc-network
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # C2 AGENT (~400MB)
+  # Stages 5-6: Installation, Command & Control
+  # ═══════════════════════════════════════════════════════════════════════════
+  aesc-c2:
+    build:
+      context: .
+      dockerfile: Dockerfile.multi
+      target: aesc-c2
+    image: aesc:c2
+    profiles: ["c2", "stage5", "stage6"]
+    container_name: aesc-c2
+    hostname: aesc-c2
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - NET_BIND_SERVICE
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - AESC_MODEL_NAME=${AESC_MODEL_NAME:-}
+    volumes:
+      - ./results:/results
+      - aesc-config:/root/.config/ash
+    networks:
+      - aesc-network
+    # C2 needs port mapping for listeners
+    ports:
+      - "4444:4444"   # Metasploit default
+      - "443:443"     # HTTPS callback
+      - "8080:8080"   # HTTP callback
+      - "9050:9050"   # SOCKS proxy
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # LATERAL MOVEMENT AGENT (~600MB)
+  # Stage 7: Actions on Objectives
+  # ═══════════════════════════════════════════════════════════════════════════
+  aesc-lateral:
+    build:
+      context: .
+      dockerfile: Dockerfile.multi
+      target: aesc-lateral
+    image: aesc:lateral
+    profiles: ["lateral", "stage7", "actions"]
+    container_name: aesc-lateral
+    hostname: aesc-lateral
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - AESC_MODEL_NAME=${AESC_MODEL_NAME:-}
+    volumes:
+      - ./results:/results
+      - aesc-config:/root/.config/ash
+    networks:
+      - aesc-network
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # FULL AGENT (~2GB) - Default, backward compatible
+  # All stages, complete Kali toolset
+  # ═══════════════════════════════════════════════════════════════════════════
+  aesc-full:
+    build:
+      context: .
+      dockerfile: Dockerfile.multi
+      target: aesc-full
+    image: aesc:full
+    profiles: ["full", "default", "all"]
+    container_name: aesc
+    hostname: aesc
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - NET_BIND_SERVICE
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - AESC_MODEL_NAME=${AESC_MODEL_NAME:-}
+    volumes:
+      - ./results:/results
+      - aesc-config:/root/.config/ash
+    networks:
+      - aesc-network
+    ports:
+      - "4444:4444"
+      - "443:443"
+      - "8080:8080"
+      - "9050:9050"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # ORCHESTRATOR - Coordinates all agents
+  # Use with attack_chain orchestrator agent
+  # ═══════════════════════════════════════════════════════════════════════════
+  aesc-orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.multi
+      target: aesc-full
+    image: aesc:orchestrator
+    profiles: ["orchestrator", "attack-chain"]
+    container_name: aesc-orchestrator
+    hostname: aesc-orchestrator
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - AESC_MODEL_NAME=${AESC_MODEL_NAME:-}
+      - AESC_AGENT=attack_chain/orchestrator
+    volumes:
+      - ./results:/results
+      - aesc-config:/root/.config/ash
+    networks:
+      - aesc-network
+    depends_on: []
+
+volumes:
+  aesc-config:
+    driver: local
+
+networks:
+  aesc-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

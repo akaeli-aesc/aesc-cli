@@ -1,0 +1,120 @@
+name: Bug Report
+description: Report a bug or unexpected behavior
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the information below.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submission Checks
+      options:
+        - label: I have searched existing issues to ensure this isn't a duplicate
+          required: true
+        - label: I have read the documentation
+          required: true
+        - label: This is a bug in aesc, not in underlying tools (nmap, sqlmap, etc.)
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: aesc crashes when...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. Run `aesc "scan 192.168.1.1"`
+        2. Approve the command
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: aesc should complete the scan successfully
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: aesc threw an error...
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: aesc Version
+      description: "Output of `aesc --version` or Docker tag"
+      placeholder: "0.1.0-beta"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: installation
+    attributes:
+      label: Installation Method
+      options:
+        - Docker (pre-built image)
+        - Docker (built from source)
+        - Local Python (uv)
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: llm
+    attributes:
+      label: LLM Provider
+      options:
+        - Anthropic (Claude)
+        - OpenAI (GPT)
+        - Ollama
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Error Messages
+      description: Please paste relevant logs or error messages
+      render: shell
+      placeholder: |
+        Paste error messages here
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other information that might help us debug the issue
+      placeholder: |
+        - Operating system:
+        - Docker version:
+        - Network configuration:
+
+  - type: checkboxes
+    id: security
+    attributes:
+      label: Security Considerations
+      options:
+        - label: This bug has security implications (if yes, please email open-dev@akæli.com instead)
+          required: false

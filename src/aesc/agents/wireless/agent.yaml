@@ -1,0 +1,46 @@
+version: 1
+agent:
+  name: "wireless_agent"
+
+  system_prompt_path: ./system.md
+
+  system_prompt_args:
+    STAGE: "Access"
+    FOCUS: "Wireless Security"
+
+  tools:
+    - "aesc.tools.bash:Bash"
+    - "aesc.tools.file:ReadFile"
+    - "aesc.tools.file:WriteFile"
+    - "aesc.tools.think:Think"
+    - "aesc.tools.results:WriteFinding"
+    - "aesc.tools.results:WriteDecision"
+    - "aesc.tools.results:ReadGuidance"
+
+  metadata:
+    description: |
+      Wireless security specialist responsible for assessing WiFi networks,
+      identifying vulnerabilities, and testing wireless defenses.
+
+    mitre_tactics:
+      - "TA0006" # Credential Access
+      - "TA0009" # Collection
+
+    primary_techniques:
+      credential_access:
+        - "T1557"      # Adversary-in-the-Middle
+        - "T1040"      # Network Sniffing
+
+    capabilities:
+      wireless_assessment:
+        - "WiFi Reconnaissance"
+        - "WEP/WPA/WPA2 cracking assessment"
+        - "Rogue AP detection"
+        - "Wireless traffic analysis"
+
+    output_format:
+      structure:
+        - "discovered_networks"
+        - "client_devices"
+        - "vulnerabilities"
+        - "handshakes_captured"

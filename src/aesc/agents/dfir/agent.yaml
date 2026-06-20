@@ -1,0 +1,50 @@
+version: 1
+agent:
+  name: "dfir_agent"
+
+  system_prompt_path: ./system.md
+
+  system_prompt_args:
+    STAGE: "Incident Response"
+    FOCUS: "Digital Forensics and Incident Response"
+
+  tools:
+    - "aesc.tools.bash:Bash"
+    - "aesc.tools.file:ReadFile"
+    - "aesc.tools.file:WriteFile"
+    - "aesc.tools.file:Glob"
+    - "aesc.tools.file:Grep"
+    - "aesc.tools.think:Think"
+    - "aesc.tools.results:WriteFinding"
+    - "aesc.tools.results:WriteDecision"
+    - "aesc.tools.results:ReadGuidance"
+
+  metadata:
+    description: |
+      DFIR specialist responsible for evidence preservation, analysis, and
+      incident response following NIST IR phases.
+
+    mitre_tactics:
+      - "TA0009"  # Collection
+      - "TA0010"  # Exfiltration
+
+    primary_techniques:
+      collection:
+        - "T1005"      # Data from Local System
+        - "T1074"      # Data Staged
+      exfiltration:
+        - "T1041"      # Exfiltration Over C2 Channel
+
+    capabilities:
+      dfir:
+        - "Evidence preservation"
+        - "Log analysis"
+        - "Timeline reconstruction"
+        - "Artifact analysis"
+
+    output_format:
+      structure:
+        - "incident_timeline"
+        - "preserved_evidence"
+        - "analysis_findings"
+        - "containment_actions"

@@ -1,0 +1,62 @@
+# Docker Compose for LOCAL DEVELOPMENT
+# For developers working on ash source code
+# Config and results saved to source directory, not home directory
+
+services:
+  aesc:
+    build: .
+    image: aesc:latest
+    stdin_open: true
+    tty: true
+
+    # Run as host user
+    user: "${UID}:${GID}"
+
+    # Mount volumes - local development mode
+    volumes:
+      # Results in source directory
+      - ./results:/results
+
+      # Config in source directory (not user's home)
+      - ./config:/home/aesc/.ash
+
+      # UV cache for faster installs
+      - ${HOME}/.cache/uv:/home/aesc/.cache/uv
+
+      # Mount source code for live editing
+      - ./:/opt/ash
+
+    # Working directory
+    working_dir: /opt/aesc
+
+    # Network configuration
+    network_mode: host
+
+    # Enable host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    # Environment variables
+    environment:
+      - HOME=/home/aesc
+      - USER=${USER:-ash}
+      - LOGNAME=${USER:-ash}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - AESC_MODEL_NAME=${AESC_MODEL_NAME:-claude-sonnet-4-5-20250929}
+      - AESC_IN_DOCKER=1
+      - AESC_DEV_MODE=1
+      - PYTHONUNBUFFERED=1
+
+    # Security capabilities
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+
+# Usage:
+#   docker-compose -f docker-compose.dev.yml run --rm ash
+#
+# Benefits:
+# - Config saved to ./config (git-ignored)
+# - Results saved to ./results (git-ignored)
+# - Source code mounted (live changes)
+# - Perfect for testing and development

@@ -1,0 +1,104 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Project files
+.vscode
+# Contains user-specific UID/GID and API keys
+.env
+.env.local
+/tests_local
+uv.toml
+.idea/*
+
+# Build dependencies
+src/aesc/deps/bin
+src/aesc/deps/tmp
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE and cache
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+
+# Generated reports
+tests_ai/report.json
+
+# Benchmarks runner outputs
+benchmarks/runs/
+
+# Project-specific - API keys and user data
+docker-compose.yml
+results/
+config/
+.aesc/.root/
+
+# Archived self-hosted registry files
+docs/archive-self-hosted-registry/ssl/
+docs/archive-self-hosted-registry/auth/
+docs/archive-self-hosted-registry/www/
+
+# Sensitive files - never commit
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+secrets.json
+config.local.json
+.secrets
+credentials.json
+
+# Security tools output
+*.pcap
+*.cap
+scan-results/
+exploits/
+payloads/
+loot/
+
+# Private development
+local_docs/
+*.private
+*.local
+*_local.py
+*_private.py
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~
+.aesc/.cache/
+
+# User config with API keys - NEVER commit
+config.json
+
+# Debug logs - may contain sensitive data
+debug-logs/
+
+# Internal planning docs / scratch scripts / archived docs (kept locally, not shipped)
+PLAN.md
+CONTEXT.md
+DECISIONS.md
+test_ash_simple.py
+test_textual_input.py
+poc_textual_chat.py
+docs/archive/
+
+# Stale pre-rename runtime dir
+.ash/
+
+# Internal release audit (do not ship)
+RELEASE_AUDIT.md

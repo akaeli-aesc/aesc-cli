@@ -1,0 +1,142 @@
+version: 1
+agent:
+  name: "installation_agent"
+
+  system_prompt_path: ./system.md
+
+  system_prompt_args:
+    STAGE: "Installation"
+    STAGE_NUMBER: "5"
+    FOCUS: "Establish persistence mechanisms and evade defensive controls"
+
+  tools:
+    - "aesc.tools.bash:Bash"
+    - "aesc.tools.file:ReadFile"
+    - "aesc.tools.file:WriteFile"
+    - "aesc.tools.file:Glob"
+    - "aesc.tools.file:Grep"
+    - "aesc.tools.mitre_attack:MitreAttack"
+    - "aesc.tools.kali_docs:KaliDocs"
+    - "aesc.tools.web:SearchWeb"
+    - "aesc.tools.web:FetchURL"
+    - "aesc.tools.think:Think"
+    - "aesc.tools.todo:SetTodoList"
+    # Results tools for agent communication
+    - "aesc.tools.results:WriteFinding"
+    - "aesc.tools.results:WriteDecision"
+    - "aesc.tools.results:ReadGuidance"
+
+  exclude_tools: []
+
+  metadata:
+    stage: 5
+    stage_name: "Installation"
+    phase: "THROUGH"
+
+    description: |
+      Red Team persistence specialist responsible for establishing backdoors,
+      deploying persistence mechanisms, and implementing defense evasion
+      techniques. Covers MITRE ATT&CK tactics TA0003 (Persistence) and
+      TA0005 (Defense Evasion).
+
+    mitre_tactics:
+      - "TA0003"  # Persistence
+      - "TA0005"  # Defense Evasion
+
+    primary_techniques:
+      persistence:
+        - "T1136"      # Create Account
+        - "T1136.001"  # Local Account
+        - "T1098"      # Account Manipulation
+        - "T1098.004"  # SSH Authorized Keys
+        - "T1053"      # Scheduled Task/Job
+        - "T1053.003"  # Cron
+        - "T1053.005"  # Scheduled Task
+        - "T1543"      # Create or Modify System Process
+        - "T1543.002"  # Systemd Service
+        - "T1543.003"  # Windows Service
+        - "T1547"      # Boot or Logon Autostart Execution
+        - "T1547.001"  # Registry Run Keys / Startup Folder
+        - "T1505"      # Server Software Component
+        - "T1505.003"  # Web Shell
+        - "T1546"      # Event Triggered Execution
+        - "T1078"      # Valid Accounts
+
+      defense_evasion:
+        - "T1070"      # Indicator Removal
+        - "T1070.001"  # Clear Windows Event Logs
+        - "T1070.002"  # Clear Linux or Mac System Logs
+        - "T1070.003"  # Clear Command History
+        - "T1070.004"  # File Deletion
+        - "T1070.006"  # Timestomp
+        - "T1036"      # Masquerading
+        - "T1036.005"  # Match Legitimate Name or Location
+        - "T1027"      # Obfuscated Files or Information
+        - "T1562"      # Impair Defenses
+        - "T1562.001"  # Disable or Modify Tools
+        - "T1562.004"  # Disable or Modify System Firewall
+        - "T1564"      # Hide Artifacts
+        - "T1564.001"  # Hidden Files and Directories
+        - "T1140"      # Deobfuscate/Decode Files
+
+    capabilities:
+      linux_persistence:
+        - "SSH authorized_keys backdoor"
+        - "Cron job persistence"
+        - "Systemd service creation"
+        - "Bashrc/profile modification"
+        - "LD_PRELOAD hijacking"
+        - "PAM backdoor"
+        - "Rootkit installation"
+        - "Web shell deployment"
+
+      windows_persistence:
+        - "Registry run keys"
+        - "Scheduled tasks"
+        - "Windows services"
+        - "WMI event subscriptions"
+        - "DLL side-loading"
+        - "COM hijacking"
+        - "Startup folder items"
+        - "Golden ticket/skeleton key"
+
+      defense_evasion:
+        - "Log clearing and manipulation"
+        - "Timestamp modification"
+        - "Process hollowing"
+        - "Binary padding"
+        - "AMSI bypass"
+        - "ETW patching"
+        - "Firewall rule modification"
+
+    tools_reference:
+      persistence:
+        - "SSH key injection"
+        - "crontab"
+        - "systemctl"
+        - "schtasks"
+        - "reg.exe"
+        - "sc.exe"
+        - "wmic"
+
+      web_shells:
+        - "Weevely"
+        - "p0wny-shell"
+        - "PHP reverse shells"
+        - "ASPX shells"
+        - "JSP shells"
+
+      evasion:
+        - "timestomp"
+        - "shred"
+        - "wevtutil"
+        - "Clear-EventLog"
+
+    output_format:
+      structure:
+        - "persistence_mechanisms"
+        - "backdoor_locations"
+        - "evasion_techniques_used"
+        - "verification_status"
+        - "cleanup_instructions"
+        - "mitre_techniques_used"

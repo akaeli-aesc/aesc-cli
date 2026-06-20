@@ -1,0 +1,96 @@
+# ASH Docker Compose Configuration Template
+#
+# SETUP INSTRUCTIONS:
+# 1. Run: ./setup.sh
+#    This creates .env with your UID/GID automatically
+# 2. Edit .env and add your API key
+# 3. Run: docker-compose run --rm ash
+#
+# This file shows the structure. Your actual docker-compose.yml
+# is user-specific and gitignored.
+
+services:
+  aesc:
+    build: .
+    image: aesc:latest
+    stdin_open: true
+    tty: true
+
+    # Run as host user to avoid permission issues
+    # docker-compose automatically loads .env file
+    # Run ./setup.sh once to create .env with your UID/GID
+    user: "${UID}:${GID}"
+
+    # Mount volumes - intelligently handle different scenarios
+    volumes:
+      # Results directory (local to source)
+      - ./results:/results
+
+      # Config directory - host user's actual home .ash directory
+      # This ensures config is saved to YOUR home, not hardcoded path
+      - ${HOME}/.aesc:/home/aesc/.ash
+
+      # UV cache - use host cache for faster installs
+      - ${HOME}/.cache/uv:/home/aesc/.cache/uv
+
+      # Optional: Mount current directory for file operations
+      # Uncomment for local development or when working with files
+      # - ./:/workspace
+
+    # Working directory inside container
+    # If you mount ./:/workspace, you can set working_dir: /workspace
+    # working_dir: /opt/aesc
+
+    # Network configuration
+    # Use host network for full network access (penetration testing)
+    # Comment out for isolated testing
+    network_mode: host
+
+    # Alternative: bridge network with specific ports
+    # ports:
+    #   - "8080:8080"
+
+    # Enable host.docker.internal for Ollama connection
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    # Environment variables (loaded from .env file automatically)
+    # Run ./setup.sh first to create .env with your UID/GID
+    # Then add your API keys to .env
+    environment:
+      # Set HOME to match container user directory
+      # Tools will create config/cache under /home/aesc
+      - HOME=/home/aesc
+
+      # Set USER so getpass.getuser() works
+      # Python's getpass checks USER/LOGNAME before looking up UID
+      - USER=${USER:-ash}
+      - LOGNAME=${USER:-ash}
+
+      # LLM Configuration - set these in .env file
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - AESC_MODEL_NAME=${AESC_MODEL_NAME:-claude-sonnet-4-5-20250929}
+
+      # ASH configuration
+      - AESC_IN_DOCKER=1
+      - PYTHONUNBUFFERED=1
+
+    # Security options (RECOMMENDED)
+    # Grant specific capabilities without running as root
+    cap_add:
+      - NET_RAW    # Required for nmap SYN scans, packet crafting
+      - NET_ADMIN  # Required for network interface manipulation
+
+    # Optional: More restrictive (uncomment for hardened security)
+    # security_opt:
+    #   - no-new-privileges:true
+    # cap_drop:
+    #   - ALL
+    # cap_add:
+    #   - NET_RAW
+    #   - NET_ADMIN
+
+# Optional: separate network for isolated testing
+# networks:
+#   aesc-net:
+#     driver: bridge

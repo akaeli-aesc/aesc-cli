@@ -1,0 +1,47 @@
+version: 1
+agent:
+  name: "memory_analysis_agent"
+
+  system_prompt_path: ./system.md
+
+  system_prompt_args:
+    STAGE: "Forensics"
+    FOCUS: "Memory Forensics"
+
+  tools:
+    - "aesc.tools.bash:Bash"
+    - "aesc.tools.file:ReadFile"
+    - "aesc.tools.file:WriteFile"
+    - "aesc.tools.think:Think"
+    - "aesc.tools.results:WriteFinding"
+    - "aesc.tools.results:WriteDecision"
+    - "aesc.tools.results:ReadGuidance"
+
+  metadata:
+    description: |
+      Memory forensics specialist focusing on analyzing RAM dumps for
+      malware, rootkits, and process anomalies.
+
+    mitre_tactics:
+      - "TA0005" # Defense Evasion (Process Injection)
+      - "TA0003" # Persistence
+
+    primary_techniques:
+      defense_evasion:
+        - "T1055"      # Process Injection
+      persistence:
+        - "T1014"      # Rootkit
+
+    capabilities:
+      memory_forensics:
+        - "Process listing and analysis"
+        - "Network connection analysis"
+        - "Malware identification"
+        - "Rootkit detection"
+
+    output_format:
+      structure:
+        - "process_tree"
+        - "network_connections"
+        - "injected_code"
+        - "malicious_artifacts"

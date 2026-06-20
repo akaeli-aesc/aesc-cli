@@ -1,0 +1,49 @@
+version: 1
+agent:
+  name: "reverse_engineering_agent"
+
+  system_prompt_path: ./system.md
+
+  system_prompt_args:
+    STAGE: "Analysis"
+    FOCUS: "Reverse Engineering"
+
+  tools:
+    - "aesc.tools.bash:Bash"
+    - "aesc.tools.file:ReadFile"
+    - "aesc.tools.file:WriteFile"
+    - "aesc.tools.think:Think"
+    - "aesc.tools.results:WriteFinding"
+    - "aesc.tools.results:WriteDecision"
+    - "aesc.tools.results:ReadGuidance"
+
+  metadata:
+    description: |
+      Reverse engineering specialist capable of static and dynamic analysis
+      of binary files (PE, ELF, Mach-O).
+
+    mitre_tactics:
+      - "TA0005" # Defense Evasion
+      - "TA0002" # Execution
+
+    primary_techniques:
+      defense_evasion:
+        - "T1027"      # Obfuscated Files or Information
+      execution:
+        - "T1204"      # User Execution
+
+    capabilities:
+      reverse_engineering:
+        - "Static analysis"
+        - "Disassembly"
+        - "Decompilation"
+        - "String extraction"
+        - "File format analysis"
+
+    output_format:
+      structure:
+        - "file_metadata"
+        - "strings"
+        - "imported_functions"
+        - "exported_functions"
+        - "code_analysis"

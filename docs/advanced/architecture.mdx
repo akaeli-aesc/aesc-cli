@@ -1,0 +1,572 @@
+---
+title: Architecture
+description: 'System design and internals'
+icon: 'sitemap'
+---
+
+## System Overview
+
+aesc is built on a clean, modular architecture designed for extensibility and security:
+
+```mermaid
+graph TB
+    A[User] --> B[CLI Interface]
+    B --> C[Agent Runtime]
+    C --> D[LLM Provider]
+    C --> E[Tool Manager]
+
+    E --> F[Approval System]
+    F --> G[Risk Assessor]
+
+    E --> H[Tool Execution]
+
+    C --> I[Session Manager]
+    I --> J[History]
+    I --> K[Context]
+
+    H --> L[File Tools]
+    H --> M[Network Tools]
+    H --> N[Security Tools]
+    H --> O[Management Tools]
+
+    N --> P[bash → Kali Tools]
+    P --> Q[nmap]
+    P --> R[sqlmap]
+    P --> S[metasploit]
+    P --> T[600+ more]
+
+    style C fill:#A855F7,stroke:#9333EA,color:#fff
+    style E fill:#A855F7,stroke:#9333EA,color:#fff
+    style H fill:#A855F7,stroke:#9333EA,color:#fff
+```
+
+## Core Components
+
+### CLI Interface
+
+**Entry point** for user interaction:
+
+```python
+# src/aesc/cli.py
+
+def cli(args: list[str]):
+    """Main CLI entry point"""
+    # Parse arguments
+    config = load_config()
+
+    # Initialize agent
+    agent = load_agent(config.default_agent)
+
+    # Run in appropriate mode
+    if args:
+        # Command mode
+        result = await agent.run(args[0])
+    else:
+        # Interactive mode
+        await interactive_shell(agent)
+```
+
+**Responsibilities:**
+- Command-line argument parsing
+- Configuration loading
+- Mode selection (interactive vs command)
+- Result formatting and display
+
+### Agent Runtime
+
+**Core orchestration** engine:
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant R as Runtime
+    participant L as LLM
+    participant T as Tools
+
+    U->>R: Command
+    R->>L: Process with context
+    L->>R: Tool calls
+    R->>T: Execute tools
+    T->>R: Results
+    R->>L: Process results
+    L->>R: Response
+    R->>U: Display
+```
+
+**Components:**
+- **Agent Loader** - Loads agent specifications
+- **Runtime Loop** - Main execution loop
+- **Context Manager** - Maintains conversation context
+- **Response Processor** - Parses LLM responses
+
+**Location:** `src/aesc/soul/`
+
+### LLM Abstraction
+
+**Provider-agnostic** interface:
+
+```python
+# src/aesc/llm.py
+
+class LLMProvider:
+    """Abstract LLM provider"""
+
+    async def complete(
+        self,
+        messages: list[Message],
+        tools: list[ToolSpec]
+    ) -> Response:
+        """Generate completion"""
+        pass
+
+class AnthropicProvider(LLMProvider):
+    """Anthropic Claude implementation"""
+    pass
+
+class OpenAIProvider(LLMProvider):
+    """OpenAI implementation"""
+    pass
+
+class OllamaProvider(LLMProvider):
+    """Ollama implementation"""
+    pass
+```
+
+**Benefits:**
+- Easy to add new providers
+- Consistent interface
+- Provider-specific optimizations
+
+### Tool System
+
+**Extensible tool framework:**
+
+```mermaid
+graph TB
+    A[Tool Manager] --> B[Tool Registry]
+    B --> C[File Tools]
+    B --> D[Network Tools]
+    B --> E[Security Tools]
+    B --> F[Custom Tools]
+
+    C --> G[read]
+    C --> H[write]
+    C --> I[edit]
+    C --> J[grep/glob]
+
+    D --> K[fetch]
+    D --> L[search]
+
+    E --> M[bash]
+    M --> N[Security Tool Wrappers]
+
+    style A fill:#A855F7,stroke:#9333EA,color:#fff
+    style B fill:#A855F7,stroke:#9333EA,color:#fff
+```
+
+**Tool Interface:**
+```python
+class CallableTool2[T]:
+    """Base tool interface"""
+
+    name: str                    # Unique identifier
+    description: str             # What tool does
+    params: Type[T]              # Pydantic model
+
+    async def __call__(self, params: T) -> dict:
+        """Execute tool"""
+        pass
+```
+
+**Tool Categories:**
+1. **File Operations** - read, write, edit, grep, glob
+2. **Network** - fetch, search
+3. **Security** - bash (wraps security tools)
+4. **Management** - SetTodoList, task tracking
+
+### Approval System
+
+**Security-first** command approval:
+
+```mermaid
+graph TD
+    A[Tool Execution Request] --> B[Risk Assessor]
+    B --> C{Risk Level}
+
+    C -->|Low| D[Standard Approval]
+    C -->|Medium| E[Review Approval]
+    C -->|High| F[Careful Review]
+    C -->|Critical| G[Extra Confirmation]
+
+    D --> H{User Approves?}
+    E --> H
+    F --> H
+    G --> H
+
+    H -->|Yes| I[Execute]
+    H -->|No| J[Reject]
+
+    style B fill:#A855F7,stroke:#9333EA,color:#fff
+    style I fill:#10B981,stroke:#059669,color:#fff
+    style J fill:#EF4444,stroke:#DC2626,color:#fff
+```
+
+**Components:**
+- **Risk Assessor** - Calculates risk level
+- **Pattern Detector** - Identifies dangerous patterns
+- **Approval Dialog** - User interface
+- **Session Cache** - Remembers approvals
+
+**Location:** `src/aesc/soul/approval.py`
+
+### Session Management
+
+**Context-aware** conversations:
+
+```python
+class SessionManager:
+    """Manage conversation sessions"""
+
+    def __init__(self):
+        self.history: list[Message] = []
+        self.context: dict[str, Any] = {}
+
+    def add_message(self, message: Message):
+        """Add message to history"""
+        self.history.append(message)
+
+        # Trim if too large
+        if len(self.history) > MAX_HISTORY:
+            self.history = self.history[-MAX_HISTORY:]
+
+    def get_context(self) -> list[Message]:
+        """Get conversation context"""
+        return self.history
+
+    def clear(self):
+        """Clear session"""
+        self.history.clear()
+        self.context.clear()
+```
+
+**Features:**
+- Message history
+- Context window management
+- Session persistence
+- History trimming
+
+## Data Flow
+
+### Command Execution Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant CLI as CLI
+    participant A as Agent
+    participant LLM as LLM
+    participant TM as Tool Manager
+    participant AP as Approval
+    participant T as Tool
+
+    U->>CLI: aesc -c "scan network"
+    CLI->>A: Initialize & load config
+    A->>LLM: "scan network" + context + tools
+    LLM->>A: Tool call: bash("nmap ...")
+    A->>TM: Execute bash tool
+    TM->>AP: Request approval
+    AP->>U: Show approval dialog
+    U->>AP: Approve
+    AP->>TM: Approved
+    TM->>T: Execute command
+    T->>TM: Results
+    TM->>A: Tool results
+    A->>LLM: Process results
+    LLM->>A: Final response
+    A->>CLI: Format response
+    CLI->>U: Display results
+```
+
+### Tool Registration Flow
+
+```mermaid
+graph TD
+    A[Tool Class] --> B[Tool Registry]
+    B --> C[Agent Spec]
+    C --> D[Tool Manager]
+    D --> E[Available to LLM]
+
+    A -->|1. Define| F[MyTool class]
+    F -->|2. Register| B
+    C -->|3. Include in| G[agent.yaml]
+    D -->|4. Load| E
+    E -->|5. LLM can call| H[Tool Execution]
+
+    style B fill:#A855F7,stroke:#9333EA,color:#fff
+    style D fill:#A855F7,stroke:#9333EA,color:#fff
+```
+
+## Design Principles
+
+### 1. Security First
+
+**Every action requires approval:**
+```python
+# Before execution
+if not await approval.request(...):
+    return ToolRejectedError()
+
+# Then execute
+result = await execute_command()
+```
+
+**Risk-based approvals:**
+- Low risk → Quick approval
+- Critical risk → Extra confirmation
+
+### 2. Extensibility
+
+**Easy to add:**
+- New tools (implement interface)
+- New agents (create YAML spec)
+- New providers (implement LLMProvider)
+
+```python
+# Add new tool
+class MyTool(CallableTool2[Params]):
+    pass
+
+# Register
+tools.register(MyTool)
+
+# Use in agent
+# agent.yaml: tools: [my_tool]
+```
+
+### 3. LLM Agnostic
+
+**Works with any LLM:**
+```yaml
+providers:
+  anthropic: ...
+  openai: ...
+  ollama: ...
+```
+
+**Consistent interface:**
+```python
+# Same code works with all
+result = await llm.complete(messages, tools)
+```
+
+### 4. Modular Design
+
+**Clear separation:**
+- CLI → User interface
+- Agent → Orchestration
+- Tools → Functionality
+- LLM → Intelligence
+
+**Each module:**
+- Single responsibility
+- Well-defined interfaces
+- Independently testable
+
+## Performance Considerations
+
+### Context Management
+
+**Challenge:** LLM context limits
+
+**Solution:**
+```python
+# Trim old messages
+if len(history) > MAX_CONTEXT:
+    history = history[-MAX_CONTEXT:]
+
+# Summarize long conversations
+if context_size > THRESHOLD:
+    summary = await llm.summarize(history)
+    history = [summary] + recent_messages
+```
+
+### Tool Execution
+
+**Native subprocess** for security tools:
+```python
+# Direct execution (fast)
+process = await asyncio.create_subprocess_shell(
+    command,
+    stdout=asyncio.subprocess.PIPE,
+    stderr=asyncio.subprocess.PIPE
+)
+
+# No HTTP overhead
+# No MCP complexity
+```
+
+**Benchmark:**
+- Tool overhead: `<10ms`
+- Docker overhead: ~2% (~44ms for nmap)
+
+### Caching
+
+**LLM response caching:**
+```python
+@lru_cache(maxsize=100)
+def get_tool_description(tool_name: str) -> str:
+    """Cache tool descriptions"""
+    pass
+```
+
+## Security Architecture
+
+### Defense in Depth
+
+```mermaid
+graph TD
+    A[User Input] --> B[Input Validation]
+    B --> C[Risk Assessment]
+    C --> D[Approval Required]
+    D --> E[Sandboxed Execution]
+    E --> F[Output Filtering]
+
+    style B fill:#A855F7,stroke:#9333EA,color:#fff
+    style C fill:#A855F7,stroke:#9333EA,color:#fff
+    style D fill:#A855F7,stroke:#9333EA,color:#fff
+```
+
+**Layers:**
+1. **Input Validation** - Pydantic models
+2. **Risk Assessment** - Pattern detection
+3. **User Approval** - Human in the loop
+4. **Sandboxed Execution** - Docker isolation
+5. **Output Filtering** - Sanitize results
+
+### Isolation
+
+**Docker containers:**
+```dockerfile
+# Kali Linux base
+FROM kalilinux/kali-rolling
+
+# Isolated environment
+# Network controls
+# Resource limits
+```
+
+**Benefits:**
+- Tools isolated from host
+- Network can be restricted
+- Clean slate for each run
+
+## Scalability
+
+### Current Limitations
+
+- Single-user design
+- Sequential tool execution
+- In-memory session storage
+
+### Future Improvements
+
+**Multi-user support:**
+```python
+# User-specific sessions
+session_manager.get_session(user_id)
+
+# Per-user config
+config.load_for_user(user_id)
+```
+
+**Parallel execution:**
+```python
+# Execute multiple tools concurrently
+results = await asyncio.gather(
+    tool1.execute(params1),
+    tool2.execute(params2)
+)
+```
+
+**Persistent storage:**
+```python
+# Redis for sessions
+session_store = RedisStore()
+
+# Database for history
+history_db = PostgreSQLStore()
+```
+
+## Testing Architecture
+
+### Test Pyramid
+
+```mermaid
+graph TD
+    A[UI Tests] --> B[Integration Tests]
+    B --> C[Unit Tests]
+
+    A -->|Few| D[Slow, Comprehensive]
+    B -->|Some| E[Medium Speed]
+    C -->|Many| F[Fast, Focused]
+
+    style C fill:#10B981,stroke:#059669,color:#fff
+```
+
+**Strategy:**
+- **Many unit tests** - Fast, focused
+- **Some integration tests** - Key workflows
+- **Few UI tests** - Critical paths
+
+### Mocking
+
+```python
+# Mock LLM
+class MockLLM:
+    async def complete(self, messages, tools):
+        return MockResponse()
+
+# Mock approval
+class MockApproval:
+    async def request(self, *args):
+        return True  # Always approve
+
+# Test with mocks
+async def test_tool():
+    tool = MyTool(MockApproval(), MockBash())
+    result = await tool(params)
+    assert result["success"]
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Development Guide"
+    icon="code"
+    href="/advanced/development"
+  >
+    Build on aesc architecture
+  </Card>
+  <Card
+    title="Contributing"
+    icon="hand-holding-heart"
+    href="/advanced/contributing"
+  >
+    Contribute to the project
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/overview"
+  >
+    Detailed API documentation
+  </Card>
+  <Card
+    title="Tools"
+    icon="wrench"
+    href="/api-reference/tools"
+  >
+    Tool system reference
+  </Card>
+</CardGroup>

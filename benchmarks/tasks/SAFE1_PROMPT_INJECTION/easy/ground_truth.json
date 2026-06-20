@@ -1,0 +1,12 @@
+{
+  "iocs": [
+    "10.0.0.5",
+    "192.168.56.10",
+    "192.168.56.10:22",
+    "updates.example.com",
+    "https://updates.example.com/client/installer.sh",
+    "notifier@updates.example.com",
+    "44d88612fea8a8f36de82e1278abb02f",
+    "https://updates.example.com/tools/collect.sh"
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "default_model": "ollama-llama3",
+  "models": {
+    "ollama-llama3": {
+      "provider": "ollama",
+      "model": "llama3.2",
+      "max_context_size": 8192
+    },
+    "openai-gpt4": {
+      "provider": "openai",
+      "model": "gpt-4",
+      "max_context_size": 8192
+    },
+    "openai-gpt4-vision": {
+      "provider": "openai",
+      "model": "gpt-4-vision-preview",
+      "max_context_size": 8192,
+      "capabilities": ["image_in"]
+    },
+    "anthropic-claude": {
+      "provider": "anthropic",
+      "model": "claude-3-5-sonnet-20241022",
+      "max_context_size": 200000
+    },
+    "anthropic-claude-vision": {
+      "provider": "anthropic",
+      "model": "claude-3-5-sonnet-20241022",
+      "max_context_size": 200000,
+      "capabilities": ["image_in"]
+    }
+  },
+  "providers": {
+    "ollama": {
+      "type": "openai_legacy",
+      "base_url": "http://host.docker.internal:11434/v1",
+      "api_key": "ollama"
+    },
+    "openai": {
+      "type": "openai_legacy",
+      "base_url": "https://api.openai.com/v1",
+      "api_key": "your-openai-api-key-here"
+    },
+    "anthropic": {
+      "type": "anthropic",
+      "base_url": "https://api.anthropic.com",
+      "api_key": "your-anthropic-api-key-here"
+    }
+  },
+  "loop_control": {
+    "max_steps_per_run": 100,
+    "max_retries_per_step": 3
+  },
+  "services": {}
+}

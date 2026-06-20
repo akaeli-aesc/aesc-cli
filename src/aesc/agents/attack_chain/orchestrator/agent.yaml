@@ -1,0 +1,236 @@
+version: 1
+agent:
+  name: "attack_chain_orchestrator"
+
+  system_prompt_path: ./system.md
+
+  system_prompt_args:
+    ROLE: "Red Team Operations Orchestrator"
+    FRAMEWORK: "Attack Chain"
+    MISSION: "Coordinate specialized agents across all 7 attack chain stages for comprehensive penetration testing operations"
+
+  # Core orchestration tools
+  tools:
+    - "aesc.tools.bash:Bash"
+    - "aesc.tools.file:ReadFile"
+    - "aesc.tools.file:WriteFile"
+    - "aesc.tools.file:Glob"
+    - "aesc.tools.file:Grep"
+    - "aesc.tools.task:Task"
+    - "aesc.tools.mitre_attack:MitreAttack"
+    - "aesc.tools.kali_docs:KaliDocs"
+    - "aesc.tools.todo:SetTodoList"
+    - "aesc.tools.think:Think"
+    # Results tools for agent communication
+    - "aesc.tools.results:InitOperation"
+    - "aesc.tools.results:GetOperationStatus"
+    - "aesc.tools.results:ReadFindings"
+    - "aesc.tools.results:ReadDecisions"
+    - "aesc.tools.results:ResolveDecision"
+    - "aesc.tools.results:WriteGuidance"
+
+  exclude_tools: []
+
+  # Specialized Attack Chain agents - All Red Team focused
+  subagents:
+    # ═══════════════════════════════════════════════════════════════
+    # PHASE 1: IN (Initial Foothold)
+    # ═══════════════════════════════════════════════════════════════
+
+    # Stage 1: Reconnaissance & Resource Development
+    reconnaissance:
+      path: ../reconnaissance/agent.yaml
+      description: |
+        Red Team reconnaissance specialist for intelligence gathering:
+        - OSINT and passive reconnaissance
+        - Active scanning (port, vulnerability, web)
+        - Target profiling and attack surface mapping
+        - C2 infrastructure preparation
+        - Payload staging setup
+        Use FIRST to gather intelligence before any attack.
+      stage: 1
+      phase: "IN"
+      mitre_tactics:
+        - "TA0043"  # Reconnaissance
+        - "TA0042"  # Resource Development
+
+    # Stage 2: Weaponization
+    weaponization:
+      path: ../weaponization/agent.yaml
+      description: |
+        Red Team weaponization specialist for payload preparation:
+        - Exploit selection and customization
+        - Payload generation (msfvenom, custom)
+        - Evasion technique implementation
+        - Delivery mechanism preparation
+        Use after reconnaissance to prepare attack tools.
+      stage: 2
+      phase: "IN"
+      mitre_tactics:
+        - "TA0042"  # Resource Development
+
+    # Stage 3: Delivery
+    delivery:
+      path: ../delivery/agent.yaml
+      description: |
+        Red Team delivery specialist for initial access:
+        - Exploit delivery (web, network, phishing)
+        - Listener setup and management
+        - Initial foothold establishment
+        - Callback verification
+        Use to deliver payloads and establish initial access.
+      stage: 3
+      phase: "IN"
+      mitre_tactics:
+        - "TA0001"  # Initial Access
+
+    # ═══════════════════════════════════════════════════════════════
+    # PHASE 2: THROUGH (Network Propagation)
+    # ═══════════════════════════════════════════════════════════════
+
+    # Stage 4: Exploitation
+    exploitation:
+      path: ../exploitation/agent.yaml
+      description: |
+        Red Team exploitation specialist for post-compromise:
+        - System enumeration and discovery
+        - Privilege escalation (Linux/Windows)
+        - Credential dumping and harvesting
+        - Internal reconnaissance
+        Use after gaining initial access to escalate privileges.
+      stage: 4
+      phase: "THROUGH"
+      mitre_tactics:
+        - "TA0002"  # Execution
+        - "TA0004"  # Privilege Escalation
+        - "TA0006"  # Credential Access
+        - "TA0007"  # Discovery
+
+    # Stage 5: Installation
+    installation:
+      path: ../installation/agent.yaml
+      description: |
+        Red Team persistence specialist for maintaining access:
+        - Backdoor installation (SSH keys, services, cron)
+        - Persistence mechanism deployment
+        - Defense evasion techniques
+        - Access verification and testing
+        Use to establish persistent access to compromised systems.
+      stage: 5
+      phase: "THROUGH"
+      mitre_tactics:
+        - "TA0003"  # Persistence
+        - "TA0005"  # Defense Evasion
+
+    # Stage 6: Command & Control
+    c2:
+      path: ../c2/agent.yaml
+      description: |
+        Red Team C2 specialist for operational control:
+        - C2 framework setup (Metasploit, Sliver, Cobalt Strike)
+        - Covert communication channels
+        - Pivoting and tunneling
+        - Session management
+        Use to establish and maintain control of compromised systems.
+      stage: 6
+      phase: "THROUGH"
+      mitre_tactics:
+        - "TA0011"  # Command and Control
+
+    # ═══════════════════════════════════════════════════════════════
+    # PHASE 3: OUT (Actions on Objectives)
+    # ═══════════════════════════════════════════════════════════════
+
+    # Stage 7: Actions on Objectives
+    actions:
+      path: ../actions/agent.yaml
+      description: |
+        Red Team actions specialist for mission objectives:
+        - Lateral movement (PTH, PTT, RDP, SSH)
+        - Data collection and staging
+        - Data exfiltration
+        - Impact demonstration (ransomware simulation)
+        - Attack path documentation
+        Use to achieve and document penetration test objectives.
+      stage: 7
+      phase: "OUT"
+      mitre_tactics:
+        - "TA0008"  # Lateral Movement
+        - "TA0009"  # Collection
+        - "TA0010"  # Exfiltration
+        - "TA0040"  # Impact
+
+  # Orchestrator-specific configuration
+  metadata:
+    version: "2.0.0"
+    author: "AESC Team"
+    framework: "Attack Chain"
+
+    description: |
+      Red Team operations orchestrator that coordinates specialized agents
+      across all seven stages of the attack chain for comprehensive
+      penetration testing and adversary emulation.
+
+    attack_chain_phases:
+      IN:
+        name: "Initial Foothold"
+        description: "Gaining initial access to target environment"
+        stages: [1, 2, 3]
+
+      THROUGH:
+        name: "Network Propagation"
+        description: "Expanding access and maintaining control"
+        stages: [4, 5, 6]
+
+      OUT:
+        name: "Actions on Objectives"
+        description: "Achieving mission goals and demonstrating impact"
+        stages: [7]
+
+    mitre_coverage:
+      tactics:
+        - "TA0043 - Reconnaissance"
+        - "TA0042 - Resource Development"
+        - "TA0001 - Initial Access"
+        - "TA0002 - Execution"
+        - "TA0003 - Persistence"
+        - "TA0004 - Privilege Escalation"
+        - "TA0005 - Defense Evasion"
+        - "TA0006 - Credential Access"
+        - "TA0007 - Discovery"
+        - "TA0008 - Lateral Movement"
+        - "TA0009 - Collection"
+        - "TA0010 - Exfiltration"
+        - "TA0011 - Command and Control"
+        - "TA0040 - Impact"
+      coverage: "14/14 Enterprise tactics"
+
+    capabilities:
+      - "Full attack chain coordination"
+      - "Parallel stage execution"
+      - "MITRE ATT&CK mapping"
+      - "Attack path documentation"
+      - "Penetration test reporting"
+
+    workflow_modes:
+      full_chain:
+        description: "Execute complete attack chain sequentially"
+        stages: [1, 2, 3, 4, 5, 6, 7]
+
+      targeted:
+        description: "Focus on specific stage"
+        use_case: "When you need specific expertise"
+
+      parallel:
+        description: "Run multiple stages concurrently"
+        use_case: "Speed up operations when stages are independent"
+
+    execution_order:
+      standard: [1, 2, 3, 4, 5, 6, 7]
+      notes: |
+        Stages are generally sequential, but can be parallelized:
+        - Stage 1 (Recon) must complete before Stage 2
+        - Stage 2 (Weaponization) and Stage 1 (Resource Dev) can overlap
+        - Stage 3 (Delivery) depends on Stage 2
+        - Stages 4, 5, 6 can be iterative
+        - Stage 7 depends on C2 being established

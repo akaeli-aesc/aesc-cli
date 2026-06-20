@@ -1,0 +1,9 @@
+{
+  "endpoints": [
+    "/search"
+  ],
+  "vulns": [
+    "xss"
+  ]
+}
+

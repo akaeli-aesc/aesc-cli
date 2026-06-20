@@ -1,0 +1,179 @@
+version: 1
+agent:
+  name: "actions_agent"
+
+  system_prompt_path: ./system.md
+
+  system_prompt_args:
+    STAGE: "Actions on Objectives"
+    STAGE_NUMBER: "7"
+    FOCUS: "Execute mission objectives - lateral movement, data collection, exfiltration, and impact"
+
+  tools:
+    - "aesc.tools.bash:Bash"
+    - "aesc.tools.file:ReadFile"
+    - "aesc.tools.file:WriteFile"
+    - "aesc.tools.file:Glob"
+    - "aesc.tools.file:Grep"
+    - "aesc.tools.mitre_attack:MitreAttack"
+    - "aesc.tools.kali_docs:KaliDocs"
+    - "aesc.tools.web:SearchWeb"
+    - "aesc.tools.web:FetchURL"
+    - "aesc.tools.think:Think"
+    - "aesc.tools.todo:SetTodoList"
+    # Results tools for agent communication
+    - "aesc.tools.results:WriteFinding"
+    - "aesc.tools.results:WriteDecision"
+    - "aesc.tools.results:ReadGuidance"
+
+  exclude_tools: []
+
+  metadata:
+    stage: 7
+    stage_name: "Actions on Objectives"
+    phase: "OUT"
+
+    description: |
+      Red Team actions specialist responsible for executing final mission
+      objectives including lateral movement, data collection, exfiltration,
+      and demonstrating impact. Covers MITRE ATT&CK tactics TA0008 (Lateral
+      Movement), TA0009 (Collection), TA0010 (Exfiltration), and TA0040 (Impact).
+
+    mitre_tactics:
+      - "TA0008"  # Lateral Movement
+      - "TA0009"  # Collection
+      - "TA0010"  # Exfiltration
+      - "TA0040"  # Impact
+
+    primary_techniques:
+      lateral_movement:
+        - "T1021"      # Remote Services
+        - "T1021.001"  # Remote Desktop Protocol
+        - "T1021.002"  # SMB/Windows Admin Shares
+        - "T1021.004"  # SSH
+        - "T1021.006"  # Windows Remote Management
+        - "T1550"      # Use Alternate Authentication Material
+        - "T1550.002"  # Pass the Hash
+        - "T1550.003"  # Pass the Ticket
+        - "T1563"      # Remote Service Session Hijacking
+        - "T1570"      # Lateral Tool Transfer
+        - "T1072"      # Software Deployment Tools
+        - "T1534"      # Internal Spearphishing
+
+      collection:
+        - "T1005"      # Data from Local System
+        - "T1039"      # Data from Network Shared Drive
+        - "T1025"      # Data from Removable Media
+        - "T1074"      # Data Staged
+        - "T1074.001"  # Local Data Staging
+        - "T1074.002"  # Remote Data Staging
+        - "T1119"      # Automated Collection
+        - "T1115"      # Clipboard Data
+        - "T1213"      # Data from Information Repositories
+        - "T1530"      # Data from Cloud Storage
+        - "T1557"      # Adversary-in-the-Middle
+        - "T1560"      # Archive Collected Data
+        - "T1560.001"  # Archive via Utility
+        - "T1113"      # Screen Capture
+        - "T1125"      # Video Capture
+        - "T1123"      # Audio Capture
+        - "T1056"      # Input Capture (Keylogging)
+
+      exfiltration:
+        - "T1041"      # Exfiltration Over C2 Channel
+        - "T1048"      # Exfiltration Over Alternative Protocol
+        - "T1048.001"  # Exfiltration Over Symmetric Encrypted Non-C2 Protocol
+        - "T1048.002"  # Exfiltration Over Asymmetric Encrypted Non-C2 Protocol
+        - "T1048.003"  # Exfiltration Over Unencrypted Non-C2 Protocol
+        - "T1567"      # Exfiltration Over Web Service
+        - "T1567.002"  # Exfiltration to Cloud Storage
+        - "T1537"      # Transfer Data to Cloud Account
+        - "T1020"      # Automated Exfiltration
+        - "T1030"      # Data Transfer Size Limits
+        - "T1052"      # Exfiltration Over Physical Medium
+
+      impact:
+        - "T1485"      # Data Destruction
+        - "T1486"      # Data Encrypted for Impact (Ransomware)
+        - "T1491"      # Defacement
+        - "T1491.001"  # Internal Defacement
+        - "T1491.002"  # External Defacement
+        - "T1495"      # Firmware Corruption
+        - "T1490"      # Inhibit System Recovery
+        - "T1489"      # Service Stop
+        - "T1529"      # System Shutdown/Reboot
+        - "T1531"      # Account Access Removal
+        - "T1561"      # Disk Wipe
+        - "T1565"      # Data Manipulation
+
+    capabilities:
+      lateral_movement:
+        - "Pass-the-hash / Pass-the-ticket"
+        - "Remote Desktop Protocol (RDP)"
+        - "Windows Remote Management (WinRM)"
+        - "PsExec / SMBExec"
+        - "SSH key reuse"
+        - "WMI execution"
+        - "DCOM execution"
+        - "Kerberos abuse (Golden/Silver ticket)"
+
+      data_collection:
+        - "File system enumeration"
+        - "Database extraction"
+        - "Email harvesting"
+        - "Browser data collection"
+        - "Credential harvesting"
+        - "Screen/keystroke capture"
+        - "Cloud storage access"
+        - "Code repository access"
+
+      exfiltration:
+        - "C2 channel exfiltration"
+        - "DNS exfiltration"
+        - "HTTPS exfiltration"
+        - "Cloud storage upload"
+        - "Email exfiltration"
+        - "Staged exfiltration"
+        - "Encrypted archives"
+
+      impact_demonstration:
+        - "Ransomware simulation"
+        - "Data destruction proof"
+        - "Service disruption"
+        - "Account lockout"
+        - "Defacement"
+
+    tools_reference:
+      lateral_movement:
+        - "impacket (psexec, wmiexec, smbexec)"
+        - "CrackMapExec"
+        - "Evil-WinRM"
+        - "xfreerdp"
+        - "Rubeus"
+        - "Mimikatz"
+
+      collection:
+        - "SharpHound (BloodHound)"
+        - "Snaffler"
+        - "LaZagne"
+        - "SessionGopher"
+        - "mimikatz"
+
+      exfiltration:
+        - "dnscat2"
+        - "rclone"
+        - "megacmd"
+        - "curl/wget"
+        - "base64"
+        - "7z/tar/gzip"
+
+    output_format:
+      structure:
+        - "objectives_achieved"
+        - "systems_compromised"
+        - "data_collected"
+        - "data_exfiltrated"
+        - "impact_demonstrated"
+        - "attack_path_documentation"
+        - "mitre_techniques_used"
+        - "recommendations"

@@ -1,0 +1,5 @@
+{
+  "ports": [22, 80],
+  "services": ["ssh", "http"]
+}
+

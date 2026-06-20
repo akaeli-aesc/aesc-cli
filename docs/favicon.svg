@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="4 4 120 120">
+  <!-- Maximum size circular black background - fills entire space -->
+  <circle cx="64" cy="64" r="64" fill="#000000"/>
+
+  <!-- Extra large white æ character - maximized for visibility -->
+  <text
+    x="64"
+    y="98"
+    font-family="Syne, system-ui, sans-serif"
+    font-size="110"
+    font-weight="700"
+    fill="#FFFFFF"
+    text-anchor="middle"
+    style="font-feature-settings: 'liga' 1; letter-spacing: -0.02em;"
+  >æ</text>
+</svg>

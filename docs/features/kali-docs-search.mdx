@@ -1,0 +1,365 @@
+---
+title: Kali Docs Search
+description: '290 tool docs built-in, instant access'
+icon: 'book-open'
+---
+
+## Built-in Documentation
+
+aesc includes **290 Kali Linux tool documentation files**, making it easy to learn and use any security tool without leaving the CLI.
+
+## How It Works
+
+### Ask aesc About Tools
+
+```bash
+# Get documentation for any tool
+aesc -c "how do I use nmap?"
+aesc -c "show me sqlmap documentation"
+aesc -c "what are the options for gobuster?"
+```
+
+### Search by Task
+
+```bash
+# Find tools by what you want to do
+aesc -c "how do I scan for SQL injection?"
+aesc -c "what tool finds subdomains?"
+aesc -c "how to crack WPA2 handshakes?"
+```
+
+## Documentation Coverage
+
+<CardGroup cols={2}>
+  <Card title="Information Gathering" icon="magnifying-glass">
+    85+ documented tools
+  </Card>
+  <Card title="Vulnerability Scanners" icon="shield-check">
+    50+ tool guides
+  </Card>
+  <Card title="Exploitation Tools" icon="bomb">
+    45+ exploit docs
+  </Card>
+  <Card title="Password & Wireless" icon="wifi">
+    65+ cracking guides
+  </Card>
+</CardGroup>
+
+## Documentation Features
+
+### Comprehensive Coverage
+
+- **Tool Description** - What the tool does
+- **Usage Examples** - Common commands
+- **Options Reference** - All flags and parameters
+- **Best Practices** - Security considerations
+- **Common Pitfalls** - What to avoid
+
+### Smart Search
+
+aesc uses AI to find relevant documentation:
+
+```bash
+# Natural language search
+aesc -c "I need to test a website for XSS vulnerabilities"
+# → Finds: xsser, xsstrike, dalfox, OWASP ZAP docs
+
+aesc -c "find hidden directories on a web server"
+# → Finds: gobuster, dirb, dirbuster, ffuf docs
+```
+
+### Contextual Help
+
+aesc provides context-aware documentation:
+
+```bash
+# During a scan
+aesc -c "scan example.com"
+# If something fails, aesc explains:
+# "nmap failed: Permission denied. Run with sudo or use Docker."
+
+# With tool suggestions
+aesc -c "test SQL injection"
+# aesc shows: "I'll use sqlmap. Here's what it does..."
+# Then provides relevant sqlmap documentation
+```
+
+## Example: Learning nmap
+
+```bash
+aesc -c "teach me nmap"
+```
+
+**aesc responds with:**
+
+```
+nmap - Network Mapper
+
+Basic Usage:
+  nmap [Scan Type] [Options] {target}
+
+Common Scan Types:
+  -sS    TCP SYN scan (default)
+  -sT    TCP connect scan
+  -sU    UDP scan
+  -sV    Version detection
+  -O     OS detection
+
+Examples:
+  # Basic scan
+  nmap 192.168.1.1
+
+  # Scan specific ports
+  nmap -p 80,443 example.com
+
+  # Service version detection
+  nmap -sV example.com
+
+  # Full scan with OS detection
+  nmap -A example.com
+
+Want me to run a scan?
+```
+
+## Documentation Index
+
+### Top Tools by Category
+
+<Tabs>
+  <Tab title="Web Testing">
+    **SQL Injection:**
+    - sqlmap - Automatic SQL injection and database takeover
+    - sqlninja - SQL Server injection tool
+    - bbqsql - Blind SQL injection framework
+
+    **XSS Testing:**
+    - xsser - Cross Site Scripter
+    - xsstrike - Advanced XSS detection suite
+    - dalfox - Parameter analysis and XSS scanning
+
+    **Web Scanners:**
+    - nikto - Web server scanner
+    - wpscan - WordPress security scanner
+    - burpsuite - Web application testing suite
+    - OWASP ZAP - Web app security scanner
+
+    **Directory Brute Force:**
+    - gobuster - Directory/file/DNS brute-forcer
+    - dirb - Web content scanner
+    - ffuf - Fast web fuzzer
+    - feroxbuster - Recursive content discovery
+  </Tab>
+
+  <Tab title="Network Testing">
+    **Port Scanning:**
+    - nmap - Network discovery and security auditing
+    - masscan - Mass IP port scanner
+    - zmap - Fast single packet network scanner
+
+    **Network Analysis:**
+    - wireshark - Network protocol analyzer
+    - tcpdump - Packet analyzer
+    - ettercap - Network security tool
+    - bettercap - Network attack framework
+
+    **Service Enumeration:**
+    - enum4linux - SMB enumeration
+    - smbmap - SMB enumeration tool
+    - nbtscan - NetBIOS scanner
+  </Tab>
+
+  <Tab title="Password Cracking">
+    **Hash Cracking:**
+    - john - John the Ripper
+    - hashcat - Advanced password recovery
+    - ophcrack - Windows password cracker
+
+    **Network Authentication:**
+    - hydra - Network login cracker
+    - medusa - Parallel brute-forcer
+    - ncrack - Network authentication cracker
+
+    **Wordlist Tools:**
+    - crunch - Wordlist generator
+    - cewl - Custom word list generator
+    - cupp - Common user passwords profiler
+  </Tab>
+
+  <Tab title="Wireless">
+    **WiFi:**
+    - aircrack-ng - WiFi security auditing suite
+    - wifite - Automated wireless attack
+    - reaver - WPS brute force
+    - fern wifi cracker - GUI-based WiFi cracker
+
+    **Bluetooth:**
+    - bluez - Bluetooth protocol stack
+    - btscanner - Bluetooth device scanner
+
+    **RFID:**
+    - mfoc - Mifare Classic offline cracker
+    - proxmark3 - RFID/NFC swiss-army tool
+  </Tab>
+
+  <Tab title="Exploitation">
+    **Frameworks:**
+    - metasploit - Exploitation framework (2,000+ exploits)
+    - setoolkit - Social engineering toolkit
+    - beef - Browser exploitation framework
+
+    **Exploits:**
+    - searchsploit - Exploit-DB search
+    - commix - Command injection exploiter
+    - crackmapexec - SMB/SSH/MSSQL swiss knife
+
+    **Privilege Escalation:**
+    - linpeas - Linux privilege escalation
+    - winpeas - Windows privilege escalation
+    - linux-exploit-suggester - Exploit recommender
+  </Tab>
+</Tabs>
+
+## Search Architecture
+
+aesc uses a multi-layered search system:
+
+1. **Keyword Matching** - Direct tool name or command search
+2. **Semantic Search** - AI understands intent and context
+3. **Category Filtering** - Searches within tool categories
+4. **Usage Pattern** - Finds tools based on common tasks
+
+## Documentation Format
+
+Each tool doc includes:
+
+```markdown
+# Tool Name
+
+## Description
+One-line description of what the tool does
+
+## Installation
+Usually pre-installed in Kali
+
+## Basic Usage
+tool [options] target
+
+## Common Options
+-o    Output file
+-v    Verbose mode
+-h    Help menu
+
+## Examples
+Example 1: Basic usage
+Example 2: Advanced usage
+
+## Tips & Tricks
+- Best practices
+- Common mistakes
+- Pro tips
+
+## Related Tools
+- Similar tools
+- Complementary tools
+
+## References
+- Official website
+- GitHub repository
+- Additional resources
+```
+
+## Accessing Full Docs
+
+### Within aesc
+
+```bash
+# Get full documentation
+aesc -c "show full nmap documentation"
+
+# Get specific section
+aesc -c "show nmap scanning options"
+aesc -c "show sqlmap injection techniques"
+
+# Compare tools
+aesc -c "compare gobuster vs dirb"
+aesc -c "which is better: john or hashcat?"
+```
+
+### External Access
+
+Documentation files are located at:
+```
+/opt/kali-docs/official-docs/
+```
+
+You can also access them directly:
+```bash
+# View with less
+less /opt/kali-docs/official-docs/nmap.md
+
+# Search with grep
+grep -r "SQL injection" /opt/kali-docs/official-docs/
+
+# Use the search tool
+python3 /opt/kali-docs/kali_doc_search.py "XSS"
+```
+
+## Benefits
+
+<CardGroup cols={2}>
+  <Card title="Learn Faster" icon="graduation-cap">
+    Access docs without context switching
+  </Card>
+  <Card title="Discover Tools" icon="compass">
+    Find the right tool for any task
+  </Card>
+  <Card title="Stay Focused" icon="bullseye">
+    No need to search online
+  </Card>
+  <Card title="Offline Ready" icon="wifi-slash">
+    Works without internet
+  </Card>
+</CardGroup>
+
+## Future Enhancements
+
+Coming soon:
+
+- **Interactive Tutorials** - Step-by-step guided tool usage
+- **Video Demos** - Watch tools in action
+- **Custom Notes** - Add your own documentation
+- **Cheat Sheets** - Quick reference cards
+- **Tool Comparisons** - Side-by-side feature comparison
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Kali Tools List"
+    icon="toolbox"
+    href="/features/kali-tools"
+  >
+    See all 600+ available tools
+  </Card>
+  <Card
+    title="Quick Start"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Get started with aesc
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/tools"
+  >
+    Tool integration docs
+  </Card>
+  <Card
+    title="Security Practices"
+    icon="shield"
+    href="/guides/security-best-practices"
+  >
+    Safe tool usage
+  </Card>
+</CardGroup>

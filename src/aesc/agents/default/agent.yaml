@@ -1,0 +1,133 @@
+version: 1
+agent:
+  name: ""
+  system_prompt_path: ./system.md
+  system_prompt_args:
+    ROLE_ADDITIONAL: ""
+  tools:
+    - "aesc.tools.task:Task"
+    # - "aesc.tools.dmail:SendDMail"
+    - "aesc.tools.think:Think"
+    - "aesc.tools.todo:SetTodoList"
+    - "aesc.tools.bash:Bash"
+    - "aesc.tools.file:ReadFile"
+    - "aesc.tools.file:Glob"
+    - "aesc.tools.file:Grep"
+    - "aesc.tools.file:WriteFile"
+    - "aesc.tools.file:StrReplaceFile"
+    # - "aesc.tools.file:PatchFile"
+    - "aesc.tools.web:SearchWeb"
+    - "aesc.tools.web:FetchURL"
+    - "aesc.tools.mitre_attack:MitreAttack"
+    - "aesc.tools.kali_docs:KaliDocs"
+    # SSH/Lateral Movement Tools
+    - "aesc.tools.ssh:SSHConnect"
+    - "aesc.tools.ssh:SSHExec"
+    - "aesc.tools.ssh:SSHSessions"
+    - "aesc.tools.ssh:SSHDisconnect"
+    - "aesc.tools.ssh:SSHUpload"
+    - "aesc.tools.ssh:SSHDownload"
+    - "aesc.tools.ssh:SSHPortForward"
+    # Credential Management
+    - "aesc.tools.creds:CredStore"
+    - "aesc.tools.creds:CredSearch"
+    - "aesc.tools.creds:CredList"
+    - "aesc.tools.creds:CredDelete"
+    # Results Tools (for reviewing subagent findings)
+    - "aesc.tools.results:ReadFindings"
+    - "aesc.tools.results:ReadDecisions"
+    - "aesc.tools.results:ResolveDecision"
+    - "aesc.tools.results:GetOperationStatus"
+    # Intel Tools (for parallel agent coordination)
+    - "aesc.tools.intel:WriteHost"
+    - "aesc.tools.intel:WriteService"
+    - "aesc.tools.intel:WriteCredential"
+    - "aesc.tools.intel:ReadIntel"
+
+  subagents:
+    # General purpose
+    coder:
+      path: ./sub.yaml
+      description: "Good at general software engineering tasks."
+
+    # ═══════════════════════════════════════════════════════════════
+    # Attack Chain Subagents - Delegate security tasks to specialists
+    # ═══════════════════════════════════════════════════════════════
+
+    # Stage 1: Reconnaissance
+    reconnaissance:
+      path: ../attack_chain/reconnaissance/agent.yaml
+      description: |
+        Red Team reconnaissance specialist. Delegate when you need:
+        - Port scanning and service enumeration (nmap, masscan)
+        - Web application fingerprinting (whatweb, nikto)
+        - Subdomain and DNS enumeration
+        - Vulnerability scanning (nuclei)
+        - OSINT gathering
+        Returns findings via WriteFinding. Check with ReadFindings after.
+
+    # Stage 2: Weaponization
+    weaponization:
+      path: ../attack_chain/weaponization/agent.yaml
+      description: |
+        Red Team weaponization specialist. Delegate when you need:
+        - Exploit selection (searchsploit, metasploit search)
+        - Payload generation (msfvenom)
+        - Custom exploit modification
+        - Evasion technique implementation
+        Requires reconnaissance findings as input.
+
+    # Stage 3: Delivery
+    delivery:
+      path: ../attack_chain/delivery/agent.yaml
+      description: |
+        Red Team delivery specialist. Delegate when you need:
+        - Exploit delivery (web, network)
+        - Listener setup (metasploit, netcat)
+        - Initial access establishment
+        - Callback verification
+        Requires weaponization output as input.
+
+    # Stage 4: Exploitation
+    exploitation:
+      path: ../attack_chain/exploitation/agent.yaml
+      description: |
+        Red Team exploitation specialist. Delegate when you need:
+        - Post-exploitation enumeration
+        - Privilege escalation (Linux/Windows)
+        - Credential harvesting (mimikatz, hashdump)
+        - Internal reconnaissance
+        Requires active session from delivery.
+
+    # Stage 5: Installation
+    installation:
+      path: ../attack_chain/installation/agent.yaml
+      description: |
+        Red Team persistence specialist. Delegate when you need:
+        - Backdoor installation (SSH keys, services, cron)
+        - Persistence mechanisms
+        - Defense evasion
+        Requires elevated access from exploitation.
+
+    # Stage 6: Command & Control
+    c2:
+      path: ../attack_chain/c2/agent.yaml
+      description: |
+        Red Team C2 specialist. Delegate when you need:
+        - C2 channel setup (metasploit, chisel, ligolo)
+        - Pivoting and tunneling
+        - SOCKS proxy configuration
+        - Session management
+        Use after establishing persistence.
+
+    # Stage 7: Actions on Objectives
+    actions:
+      path: ../attack_chain/actions/agent.yaml
+      description: |
+        Red Team actions specialist. Delegate when you need:
+        - Lateral movement (pass-the-hash, SSH keys)
+        - Data discovery and collection
+        - Data exfiltration
+        - Impact demonstration
+        - Final reporting
+        Use after C2 is established.

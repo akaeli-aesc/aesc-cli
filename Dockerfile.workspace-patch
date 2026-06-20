@@ -1,0 +1,23 @@
+# Thin overlay: add /workspace support to aesc:full
+FROM aesc:full
+
+# Create /workspace directory
+RUN mkdir -p /workspace && chmod 777 /workspace
+
+# Patch file tools to allow /workspace paths
+COPY src/aesc/tools/file/write.py /app/src/aesc/tools/file/write.py
+COPY src/aesc/tools/file/glob.py /app/src/aesc/tools/file/glob.py
+COPY src/aesc/tools/file/replace.py /app/src/aesc/tools/file/replace.py
+
+# Patch soul wire shutdown timeout (500ms → 50ms) for faster run_complete delivery
+COPY src/aesc/soul/__init__.py /app/src/aesc/soul/__init__.py
+
+# Fix nmap capabilities — set on the real binary under /usr/lib/nmap/
+RUN for bin in /usr/lib/nmap/nmap /usr/bin/nmap; do \
+        [ -f "$bin" ] && setcap cap_net_raw,cap_net_admin,cap_net_bind_service+eip "$bin" 2>/dev/null && \
+        echo "caps set: $bin" || true; \
+    done
+
+# Reinstall to pick up changes
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen

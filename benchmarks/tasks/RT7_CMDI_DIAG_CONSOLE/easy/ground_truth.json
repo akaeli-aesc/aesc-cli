@@ -1,0 +1,6 @@
+{
+  "endpoints": ["/api/v1/ping"],
+  "secrets": ["diag_release_key_2025_12_17_demo"],
+  "vulns": ["command_injection"]
+}
+

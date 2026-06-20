@@ -1,0 +1,24 @@
+{
+    "typeCheckingMode": "standard",
+    "include": [
+        "src/**/*.py",
+        "tests/**/*.py",
+        "tests_ai/scripts/**/*.py"
+    ],
+    "exclude": [
+        "**/__pycache__/**/*.py",
+    ],
+    "strict": [
+        "src/ash/prompts",
+        "src/ash/soul",
+        "src/ash/tools",
+        "src/ash/ui/acp",
+        "src/ash/ui/print",
+        // "src/ash/ui/shell",
+        "src/ash/ui/shell/visualize.py",
+        "src/ash/ui/wire",
+        "src/ash/utils/*.py",
+        "src/ash/wire",
+        "src/ash/*.py",
+    ]
+}

@@ -1,0 +1,279 @@
+# aesc - AI-powered security agent
+# Multi-stage build for specialized, lightweight images
+#
+# Usage:
+#   docker build --target aesc-recon -t aesc:recon -f Dockerfile.multi .
+#   docker build --target aesc-exploit -t aesc:exploit -f Dockerfile.multi .
+#   docker build --target aesc-c2 -t aesc:c2 -f Dockerfile.multi .
+#   docker build --target aesc-full -t aesc:full -f Dockerfile.multi .
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# BASE STAGE - Python, uv, aesc installation (shared by all)
+# ═══════════════════════════════════════════════════════════════════════════════
+FROM kalilinux/kali-rolling:latest AS aesc-base
+
+# Install Python 3.13 and essential packages
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    python3.13 \
+    python3-pip \
+    python3.13-venv \
+    git \
+    curl \
+    ca-certificates \
+    libcap2-bin \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install uv (fast Python package manager)
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
+
+# Copy aesc source code
+COPY . /opt/aesc
+WORKDIR /opt/aesc
+
+# Fix symlinks
+RUN rm -f src/aesc/CHANGELOG.md && ln -s /opt/aesc/CHANGELOG.md src/aesc/CHANGELOG.md
+
+# Install aesc dependencies
+ENV UV_HTTP_TIMEOUT=300
+RUN uv sync
+
+# Pre-download MITRE ATT&CK data
+RUN mkdir -p /opt/aesc/data/mitre-attack && \
+    curl -fsSL --retry 3 --retry-delay 5 \
+    "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json" \
+    -o /opt/aesc/data/mitre-attack/enterprise-attack.json
+
+# Install redis-py for wire bridge
+RUN uv pip install redis[hiredis]
+
+# Patch kosong library for vLLM compatibility
+RUN sed -i '89s|stream_options={"include_usage": True},|**({} if not self.stream else {"stream_options": {"include_usage": True}}),|' \
+    .venv/lib/python*/site-packages/kosong/contrib/chat_provider/openai_legacy.py 2>/dev/null || true
+
+# Create directories
+RUN mkdir -p /results /root/.config/aesc /home/aesc/.aesc /home/aesc/.cache && \
+    chmod -R 777 /home/aesc /results
+
+
+# Set up environment
+ENV PYTHONUNBUFFERED=1
+ENV AESC_IN_DOCKER=1
+ENV UV_LINK_MODE=copy
+ENV UV_NO_PROGRESS=1
+ENV TERM=xterm-256color
+
+ENTRYPOINT ["uv", "run", "aesc"]
+CMD []
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# RECON STAGE - Reconnaissance tools (~500MB)
+# Stages: 1 (Reconnaissance)
+# ═══════════════════════════════════════════════════════════════════════════════
+FROM aesc-base AS aesc-recon
+
+LABEL org.opencontainers.image.title="aesc-recon"
+LABEL org.opencontainers.image.description="AESC reconnaissance agent - port scanning, enumeration, OSINT"
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    # Port Scanning
+    nmap \
+    masscan \
+    # Web Enumeration
+    gobuster \
+    ffuf \
+    dirb \
+    nikto \
+    whatweb \
+    # DNS & Subdomain
+    dnsutils \
+    dnsrecon \
+    dnsenum \
+    # OSINT
+    theharvester \
+    whois \
+    # HTTP Tools
+    curl \
+    wget \
+    httpie \
+    # Utilities
+    jq \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install nuclei (not in Kali repos, install from GitHub)
+RUN curl -sSL https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei_*_linux_amd64.zip -o /tmp/nuclei.zip && \
+    unzip /tmp/nuclei.zip -d /usr/local/bin/ && \
+    rm /tmp/nuclei.zip && \
+    chmod +x /usr/local/bin/nuclei || echo "nuclei install skipped"
+
+# Install subfinder
+RUN curl -sSL https://github.com/projectdiscovery/subfinder/releases/latest/download/subfinder_*_linux_amd64.zip -o /tmp/subfinder.zip && \
+    unzip /tmp/subfinder.zip -d /usr/local/bin/ && \
+    rm /tmp/subfinder.zip && \
+    chmod +x /usr/local/bin/subfinder || echo "subfinder install skipped"
+
+# Install httpx
+RUN curl -sSL https://github.com/projectdiscovery/httpx/releases/latest/download/httpx_*_linux_amd64.zip -o /tmp/httpx.zip && \
+    unzip /tmp/httpx.zip -d /usr/local/bin/ && \
+    rm /tmp/httpx.zip && \
+    chmod +x /usr/local/bin/httpx || echo "httpx install skipped"
+
+# Set network capabilities
+RUN NMAP_BIN=$(which nmap) && setcap cap_net_raw,cap_net_admin,cap_net_bind_service+eip "$NMAP_BIN" || true
+RUN MASSCAN_BIN=$(which masscan) && [ -f "$MASSCAN_BIN" ] && setcap cap_net_raw+eip "$MASSCAN_BIN" || true
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EXPLOIT STAGE - Exploitation tools (~800MB)
+# Stages: 2 (Weaponization), 3 (Delivery), 4 (Exploitation)
+# ═══════════════════════════════════════════════════════════════════════════════
+FROM aesc-base AS aesc-exploit
+
+LABEL org.opencontainers.image.title="aesc-exploit"
+LABEL org.opencontainers.image.description="AESC exploitation agent - Metasploit, SQLMap, privilege escalation"
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    # Framework
+    metasploit-framework \
+    # Exploitation
+    sqlmap \
+    exploitdb \
+    searchsploit \
+    # Web Exploitation
+    wpscan \
+    # Password Attacks
+    hydra \
+    john \
+    hashcat \
+    # Utilities
+    curl \
+    wget \
+    netcat-openbsd \
+    socat \
+    # Compilers (for exploit compilation)
+    gcc \
+    make \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Download LinPEAS/WinPEAS for privilege escalation
+RUN mkdir -p /opt/privesc && \
+    curl -sSL https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh -o /opt/privesc/linpeas.sh && \
+    curl -sSL https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEASx64.exe -o /opt/privesc/winpeas.exe && \
+    chmod +x /opt/privesc/linpeas.sh
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# C2 STAGE - Command & Control tools (~400MB)
+# Stages: 5 (Installation), 6 (C2)
+# ═══════════════════════════════════════════════════════════════════════════════
+FROM aesc-base AS aesc-c2
+
+LABEL org.opencontainers.image.title="aesc-c2"
+LABEL org.opencontainers.image.description="AESC C2 agent - tunneling, pivoting, persistence"
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    # Tunneling
+    proxychains4 \
+    socat \
+    netcat-openbsd \
+    openssh-client \
+    # Pivoting
+    sshuttle \
+    # Utilities
+    curl \
+    wget \
+    tmux \
+    screen \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Chisel
+RUN curl -sSL https://github.com/jpillora/chisel/releases/latest/download/chisel_*_linux_amd64.gz -o /tmp/chisel.gz && \
+    gunzip /tmp/chisel.gz && \
+    mv /tmp/chisel /usr/local/bin/chisel && \
+    chmod +x /usr/local/bin/chisel || echo "chisel install skipped"
+
+# Install Ligolo-ng
+RUN curl -sSL https://github.com/nicocha30/ligolo-ng/releases/latest/download/ligolo-ng_proxy_*_linux_amd64.tar.gz -o /tmp/ligolo.tar.gz && \
+    tar -xzf /tmp/ligolo.tar.gz -C /usr/local/bin/ && \
+    rm /tmp/ligolo.tar.gz && \
+    chmod +x /usr/local/bin/proxy || echo "ligolo install skipped"
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# LATERAL STAGE - Lateral movement & Actions tools (~600MB)
+# Stage: 7 (Actions on Objectives)
+# ═══════════════════════════════════════════════════════════════════════════════
+FROM aesc-base AS aesc-lateral
+
+LABEL org.opencontainers.image.title="aesc-lateral"
+LABEL org.opencontainers.image.description="AESC lateral movement agent - Windows/AD attacks, data exfil"
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    # Impacket suite (PSExec, WMIExec, etc.)
+    python3-impacket \
+    impacket-scripts \
+    # SMB tools
+    smbclient \
+    smbmap \
+    enum4linux \
+    # RDP
+    freerdp2-x11 \
+    # Kerberos
+    krb5-user \
+    # Evil-WinRM dependencies
+    ruby \
+    ruby-dev \
+    # Utilities
+    curl \
+    wget \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Evil-WinRM
+RUN gem install evil-winrm || echo "evil-winrm install skipped"
+
+# Install CrackMapExec
+RUN pipx install crackmapexec || pip3 install crackmapexec || echo "cme install skipped"
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# FULL STAGE - All Kali tools (~2GB)
+# All stages, backward compatible with original Dockerfile
+# ═══════════════════════════════════════════════════════════════════════════════
+FROM aesc-base AS aesc-full
+
+LABEL org.opencontainers.image.title="aesc"
+LABEL org.opencontainers.image.description="AESC full agent - all Kali penetration testing tools"
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    kali-linux-default \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set capabilities on network tools
+RUN NMAP_BIN=$(which nmap) && setcap cap_net_raw,cap_net_admin,cap_net_bind_service+eip "$NMAP_BIN" || true
+RUN MASSCAN_BIN=$(which masscan) && [ -f "$MASSCAN_BIN" ] && setcap cap_net_raw+eip "$MASSCAN_BIN" || true
+RUN for tool in /usr/bin/hping3 /usr/bin/arping /usr/sbin/arp-scan; do \
+        [ -f "$tool" ] && setcap cap_net_raw+eip "$tool" 2>/dev/null || true; \
+    done
+
+
+# Verify tools
+RUN echo "Verifying security tools..." && \
+    (which nmap && nmap --version || echo "nmap check skipped") && \
+    (which sqlmap && sqlmap --version || echo "sqlmap check skipped") && \
+    echo "Tool verification completed!"
+
+LABEL org.opencontainers.image.source="https://github.com/akaeli-aesc/aesc-cli"
+LABEL org.opencontainers.image.licenses="Apache-2.0"

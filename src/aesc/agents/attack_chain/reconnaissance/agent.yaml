@@ -1,0 +1,132 @@
+version: 1
+agent:
+  name: "reconnaissance_agent"
+
+  system_prompt_path: ./system.md
+
+  system_prompt_args:
+    STAGE: "Reconnaissance & Resource Development"
+    STAGE_NUMBER: "1"
+    FOCUS: "Gather intelligence on targets and prepare attack infrastructure"
+
+  tools:
+    - "aesc.tools.bash:Bash"
+    - "aesc.tools.file:ReadFile"
+    - "aesc.tools.file:WriteFile"
+    - "aesc.tools.file:Glob"
+    - "aesc.tools.file:Grep"
+    - "aesc.tools.mitre_attack:MitreAttack"
+    - "aesc.tools.kali_docs:KaliDocs"
+    - "aesc.tools.web:SearchWeb"
+    - "aesc.tools.web:FetchURL"
+    - "aesc.tools.think:Think"
+    - "aesc.tools.todo:SetTodoList"
+    # Results tools for agent communication
+    - "aesc.tools.results:WriteFinding"
+    - "aesc.tools.results:WriteDecision"
+    - "aesc.tools.results:ReadGuidance"
+
+  exclude_tools: []
+
+  metadata:
+    stage: 1
+    stage_name: "Reconnaissance & Resource Development"
+    phase: "IN"
+
+    description: |
+      Red Team reconnaissance specialist responsible for intelligence gathering,
+      target profiling, and attack infrastructure preparation. Combines MITRE
+      ATT&CK tactics TA0043 (Reconnaissance) and TA0042 (Resource Development).
+
+    mitre_tactics:
+      - "TA0043"  # Reconnaissance
+      - "TA0042"  # Resource Development
+
+    primary_techniques:
+      reconnaissance:
+        - "T1595"      # Active Scanning
+        - "T1595.001"  # Scanning IP Blocks
+        - "T1595.002"  # Vulnerability Scanning
+        - "T1595.003"  # Wordlist Scanning
+        - "T1592"      # Gather Victim Host Information
+        - "T1590"      # Gather Victim Network Information
+        - "T1589"      # Gather Victim Identity Information
+        - "T1591"      # Gather Victim Org Information
+        - "T1593"      # Search Open Websites/Domains
+        - "T1594"      # Search Victim-Owned Websites
+        - "T1596"      # Search Open Technical Databases
+        - "T1597"      # Search Closed Sources
+
+      resource_development:
+        - "T1583"      # Acquire Infrastructure
+        - "T1583.001"  # Domains
+        - "T1583.003"  # Virtual Private Server
+        - "T1584"      # Compromise Infrastructure
+        - "T1587"      # Develop Capabilities
+        - "T1587.001"  # Malware
+        - "T1587.004"  # Exploits
+        - "T1588"      # Obtain Capabilities
+        - "T1588.005"  # Exploits
+        - "T1608"      # Stage Capabilities
+
+    capabilities:
+      passive_recon:
+        - "OSINT gathering (social media, job postings, public records)"
+        - "DNS enumeration and analysis"
+        - "WHOIS lookups and domain research"
+        - "Certificate transparency log analysis"
+        - "Search engine dorking (Google, Shodan, Censys)"
+        - "Public code repository scanning (GitHub, GitLab)"
+        - "Document metadata extraction"
+        - "Email harvesting"
+
+      active_recon:
+        - "Port scanning (TCP/UDP)"
+        - "Service enumeration and banner grabbing"
+        - "OS fingerprinting"
+        - "Vulnerability scanning"
+        - "Web application fingerprinting"
+        - "Directory and file enumeration"
+        - "Virtual host discovery"
+        - "WAF/IDS detection"
+
+      resource_development:
+        - "C2 infrastructure setup"
+        - "Domain acquisition and configuration"
+        - "SSL/TLS certificate generation"
+        - "Payload hosting servers"
+        - "Phishing infrastructure"
+        - "Redirector configuration"
+        - "Tool staging"
+
+    tools_reference:
+      passive:
+        - "theHarvester"
+        - "Recon-ng"
+        - "SpiderFoot"
+        - "Shodan"
+        - "Censys"
+        - "crt.sh"
+
+      active:
+        - "nmap"
+        - "masscan"
+        - "RustScan"
+        - "Nikto"
+        - "WhatWeb"
+        - "ffuf"
+        - "gobuster"
+        - "feroxbuster"
+        - "nuclei"
+        - "httpx"
+
+    output_format:
+      structure:
+        - "target_profile"
+        - "network_topology"
+        - "identified_services"
+        - "potential_vulnerabilities"
+        - "attack_surface"
+        - "infrastructure_prepared"
+        - "recommended_attack_vectors"
+        - "mitre_techniques_applicable"

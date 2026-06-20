@@ -1,0 +1,654 @@
+---
+title: Development Guide
+description: 'Build and extend aesc features'
+icon: 'code'
+---
+
+## Development Setup
+
+### Option 1: Local Development
+
+<Steps>
+  <Step title="Install uv">
+    ```bash
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    ```
+  </Step>
+
+  <Step title="Clone Repository">
+    ```bash
+    git clone https://github.com/akaeli-aesc/aesc-cli.git
+    cd aesc-cli
+    ```
+  </Step>
+
+  <Step title="Install Dependencies">
+    ```bash
+    uv sync
+    ```
+  </Step>
+
+  <Step title="Run aesc">
+    ```bash
+    uv run aesc
+    ```
+  </Step>
+</Steps>
+
+**Limitations:**
+- ⚠️ Security tools (nmap, sqlmap) not available
+- ⚠️ Different environment than Docker
+- ✅ Good for: Agent logic, tool development, testing
+
+### Option 2: Docker Development
+
+<Steps>
+  <Step title="Clone Repository">
+    ```bash
+    git clone https://github.com/akaeli-aesc/aesc-cli.git
+    cd aesc-cli
+    ```
+  </Step>
+
+  <Step title="Build Image">
+    ```bash
+    docker build -t aesc:dev .
+    ```
+  </Step>
+
+  <Step title="Run with Code Mount">
+    ```bash
+    docker run -it --rm \
+      -v $(pwd):/opt/aesc \
+      -v ~/.aesc:/root/.aesc \
+      aesc:dev
+    ```
+  </Step>
+</Steps>
+
+**Benefits:**
+- ✅ Full Kali environment
+- ✅ All security tools available
+- ✅ Same as production
+
+## Project Structure
+
+```
+aesc-cli/
+├── src/aesc/                    # Main source code
+│   ├── soul/                   # Agent runtime
+│   │   ├── agent.py           # Agent loader
+│   │   ├── runtime.py         # Execution loop
+│   │   ├── approval.py        # Permission system
+│   │   └── toolset.py         # Tool management
+│   │
+│   ├── tools/                  # Tool implementations
+│   │   ├── bash/              # Shell execution
+│   │   ├── file/              # File operations
+│   │   ├── web/               # Web tools
+│   │   └── task/              # Task management
+│   │
+│   ├── agents/                 # Agent specifications
+│   │   └── default/           # Default agent
+│   │
+│   ├── llm.py                  # LLM abstraction
+│   ├── config.py               # Configuration
+│   └── cli.py                  # CLI entry point
+│
+├── tests/                      # Test suite
+├── docs/                       # Documentation
+└── pyproject.toml              # Project config
+```
+
+## Creating Custom Tools
+
+### Tool Interface
+
+```python
+from typing import ClassVar
+from pydantic import BaseModel
+from aesc.provider import CallableTool2, ToolReturnType
+from aesc.tools.utils import ToolRejectedError
+
+class ToolParams(BaseModel):
+    """Parameters for your tool"""
+    target: str
+    option: str = "default"
+
+class MyTool(CallableTool2[ToolParams]):
+    """Your custom tool"""
+
+    # Tool metadata
+    name: ClassVar[str] = "MyTool"
+    description: ClassVar[str] = "Description of what the tool does"
+    params: ClassVar[type[ToolParams]] = ToolParams
+
+    def __init__(self, approval, bash):
+        """Dependency injection"""
+        self._approval = approval
+        self._bash = bash
+
+    async def __call__(self, params: ToolParams) -> ToolReturnType:
+        """Execute tool"""
+        # Request approval
+        if not await self._approval.request(
+            self.name,
+            "perform action",
+            f"Action on {params.target}"
+        ):
+            return ToolRejectedError()
+
+        # Your implementation
+        result = await self._bash({
+            "command": f"your-command {params.target}"
+        })
+
+        return result
+```
+
+### Example: nmap Tool
+
+```python
+from typing import ClassVar
+from pydantic import BaseModel
+from aesc.provider import CallableTool2
+
+class NmapParams(BaseModel):
+    target: str
+    ports: str = "1-1000"
+    scan_type: str = "sV"
+
+class NmapTool(CallableTool2[NmapParams]):
+    name: ClassVar[str] = "NmapTool"
+    description: ClassVar[str] = "Network scanning with nmap"
+    params: ClassVar[type[NmapParams]] = NmapParams
+
+    def __init__(self, approval, bash):
+        self._approval = approval
+        self._bash = bash
+
+    async def __call__(self, params: NmapParams):
+        # Build nmap command
+        command = f"nmap -{params.scan_type} -p {params.ports} {params.target}"
+
+        # Request approval
+        if not await self._approval.request(
+            self.name,
+            "run network scan",
+            f"Scan {params.target}"
+        ):
+            return ToolRejectedError()
+
+        # Execute via bash tool
+        result = await self._bash({"command": command})
+
+        # Parse results (optional)
+        if result.get("success"):
+            output = result["output"]
+            # Parse nmap output...
+            return {
+                "success": True,
+                "output": output,
+                "parsed": parse_nmap_output(output)
+            }
+
+        return result
+```
+
+### Register Tool
+
+Tools are registered by their fully-qualified `"module.path:ClassName"` string in
+the agent's `agent.yaml`. There is no central registry or `__all__` to update — just
+add the import path to the agent's `tools` list:
+
+```yaml
+# src/aesc/agents/default/agent.yaml
+agent:
+  tools:
+    - "aesc.tools.file:ReadFile"
+    - "aesc.tools.file:WriteFile"
+    - "aesc.tools.bash:Bash"
+    - "aesc.tools.my_tool:MyTool"  # Your new tool
+```
+
+## Tool Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Pydantic" icon="check">
+    Validate parameters with Pydantic models
+  </Card>
+  <Card title="Request Approval" icon="shield-check">
+    Always use approval system for risky operations
+  </Card>
+  <Card title="Handle Errors" icon="triangle-exclamation">
+    Return structured error responses
+  </Card>
+  <Card title="Document Behavior" icon="book">
+    Clear descriptions help LLM use tools
+  </Card>
+  <Card title="Keep Tools Focused" icon="bullseye">
+    One tool, one responsibility
+  </Card>
+  <Card title="Return Structured Data" icon="table">
+    JSON responses for easy parsing
+  </Card>
+</CardGroup>
+
+## Creating Custom Agents
+
+### Agent Specification
+
+```yaml
+# ~/my-agents/my-agent/agent.yaml
+version: 1
+agent:
+  name: "my-agent"
+  system_prompt_path: ./system.md
+  tools:
+    - "aesc.tools.file:ReadFile"
+    - "aesc.tools.file:WriteFile"
+    - "aesc.tools.bash:Bash"
+    - "aesc.tools.my_tool:MyTool"
+```
+
+The system prompt lives in a separate markdown file referenced by
+`system_prompt_path` (relative to the agent.yaml location):
+
+```markdown
+# system.md
+You are a specialized security agent.
+
+Your role:
+- Specific task 1
+- Specific task 2
+
+Always:
+- Get authorization
+- Document findings
+- Follow best practices
+```
+
+See the [Agents Reference](/api-reference/agents) for the complete schema.
+
+### Agent Loading
+
+Agents are loaded from a YAML file via `aesc.soul.agent.load_agent`. The CLI
+resolves the agent file in this order:
+
+1. The `--agent-file` CLI argument
+2. The `AESC_AGENT_FILE` environment variable
+3. The built-in default agent
+
+```bash
+aesc --agent-file ~/my-agents/my-agent/agent.yaml
+```
+
+## Testing
+
+### Running Tests
+
+```bash
+# Run all tests
+uv run python -m pytest tests/ -v
+
+# With coverage
+uv run python -m pytest tests/ --cov=src/aesc
+
+# Specific test file
+uv run python -m pytest tests/test_tools.py
+
+# Specific test
+uv run python -m pytest tests/test_tools.py::test_nmap_tool
+```
+
+### Writing Tests
+
+```python
+# tests/test_my_tool.py
+
+import pytest
+from aesc.tools.my_tool import MyTool, ToolParams
+
+@pytest.mark.asyncio
+async def test_my_tool_success():
+    """Test successful tool execution"""
+    # Setup
+    approval = MockApproval(always_approve=True)
+    bash = MockBash(return_value={"success": True})
+
+    tool = MyTool(approval, bash)
+
+    # Execute
+    result = await tool(ToolParams(
+        target="example.com",
+        option="test"
+    ))
+
+    # Assert
+    assert result["success"] is True
+    assert "output" in result
+
+@pytest.mark.asyncio
+async def test_my_tool_rejection():
+    """Test user rejection"""
+    approval = MockApproval(always_approve=False)
+    tool = MyTool(approval, None)
+
+    result = await tool(ToolParams(target="example.com"))
+
+    assert isinstance(result, ToolRejectedError)
+```
+
+## Code Style
+
+### Formatting
+
+```bash
+# Format code with ruff
+uv run ruff format src/
+
+# Check formatting
+uv run ruff check src/
+
+# Fix auto-fixable issues
+uv run ruff check --fix src/
+```
+
+### Type Checking
+
+```bash
+# Run pyright
+uv run pyright src/
+
+# Check specific file
+uv run pyright src/aesc/tools/my_tool.py
+```
+
+### Style Guide
+
+```python
+# Good: Type hints
+async def process_result(data: dict[str, Any]) -> str:
+    """Process tool result"""
+    return data.get("output", "")
+
+# Good: Docstrings
+class MyTool(CallableTool2[ToolParams]):
+    """
+    Custom tool for specific functionality.
+
+    This tool provides...
+
+    Example:
+        tool = MyTool(approval, bash)
+        result = await tool(ToolParams(target="example.com"))
+    """
+    pass
+
+# Good: Error handling
+try:
+    result = await execute_command()
+except CommandError as e:
+    return {"success": False, "error": str(e)}
+```
+
+## Debugging
+
+### Enable Debug Logging
+
+```bash
+export AESC_LOG_LEVEL=DEBUG
+uv run aesc
+```
+
+### Add Debug Prints
+
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+
+async def my_function():
+    logger.debug("Function called")
+    logger.info("Processing...")
+    logger.error("Error occurred")
+```
+
+### Use pdb
+
+```python
+import pdb
+
+async def my_function():
+    pdb.set_trace()  # Breakpoint
+    # Code continues...
+```
+
+### Docker Debugging
+
+```bash
+# Build with debug flag
+docker build -t aesc:debug --build-arg DEBUG=1 .
+
+# Run with logs
+docker run -it --rm \
+  -e AESC_LOG_LEVEL=DEBUG \
+  aesc:debug
+```
+
+## Contributing Workflow
+
+<Steps>
+  <Step title="Fork Repository">
+    ```bash
+    # Fork on GitHub
+    # Then clone your fork
+    git clone https://github.com/YOUR_USERNAME/aesc-cli.git
+    ```
+  </Step>
+
+  <Step title="Create Branch">
+    ```bash
+    git checkout -b feature/my-feature
+    ```
+  </Step>
+
+  <Step title="Make Changes">
+    ```bash
+    # Edit code
+    # Add tests
+    # Update docs
+    ```
+  </Step>
+
+  <Step title="Test">
+    ```bash
+    # Run tests
+    uv run python -m pytest tests/
+
+    # Check formatting
+    uv run ruff check src/
+
+    # Type check
+    uv run pyright src/
+    ```
+  </Step>
+
+  <Step title="Commit">
+    ```bash
+    git add .
+    git commit -m "feat: add my feature"
+    ```
+  </Step>
+
+  <Step title="Push & PR">
+    ```bash
+    git push origin feature/my-feature
+    # Create PR on GitHub
+    ```
+  </Step>
+</Steps>
+
+## Building Docker Image
+
+### Standard Build
+
+```bash
+docker build -t aesc:latest .
+```
+
+### Build Arguments
+
+```bash
+# Specific Python version
+docker build --build-arg PYTHON_VERSION=3.13 -t aesc:custom .
+
+# With debug symbols
+docker build --build-arg DEBUG=1 -t aesc:debug .
+```
+
+### Multi-Platform Build
+
+```bash
+# Build for multiple architectures
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t aesc:multiarch .
+```
+
+## Release Process
+
+<Steps>
+  <Step title="Update Version">
+    ```toml
+    # pyproject.toml
+    [project]
+    version = "0.2.0"
+    ```
+  </Step>
+
+  <Step title="Update Changelog">
+    ```markdown
+    # CHANGELOG.md
+
+    ## [0.2.0] - 2024-01-15
+
+    ### Added
+    - New feature X
+    - Tool Y integration
+
+    ### Fixed
+    - Bug Z
+    ```
+  </Step>
+
+  <Step title="Create Tag">
+    ```bash
+    git tag -a v0.2.0 -m "Release v0.2.0"
+    git push origin v0.2.0
+    ```
+  </Step>
+
+  <Step title="GitHub Release">
+    - GitHub Actions builds Docker images
+    - Images published to GHCR
+    - Release notes auto-generated
+  </Step>
+</Steps>
+
+## API Reference
+
+### Key Classes
+
+<Tabs>
+  <Tab title="CallableTool2">
+    ```python
+    class CallableTool2[T]:
+        name: str
+        description: str
+        params: Type[T]
+
+        async def __call__(self, params: T) -> dict:
+            """Execute tool"""
+            pass
+    ```
+  </Tab>
+
+  <Tab title="Approval">
+    ```python
+    class Approval:
+        async def request(
+            self,
+            tool_name: str,
+            action: str,
+            details: str
+        ) -> bool:
+            """Request user approval"""
+            pass
+    ```
+  </Tab>
+
+  <Tab title="Agent">
+    ```python
+    class Agent:
+        name: str
+        tools: list[str]
+        prompt: str
+
+        @classmethod
+        def from_yaml(cls, path: str) -> "Agent":
+            """Load agent from YAML"""
+            pass
+    ```
+  </Tab>
+</Tabs>
+
+## Resources
+
+<CardGroup cols={2}>
+  <Card title="Source Code" icon="github">
+    [github.com/akaeli-aesc/aesc-cli](https://github.com/akaeli-aesc/aesc-cli)
+  </Card>
+  <Card title="Issues" icon="bug">
+    [GitHub Issues](https://github.com/akaeli-aesc/aesc-cli/issues)
+  </Card>
+  <Card title="Discussions" icon="comments">
+    [GitHub Discussions](https://github.com/akaeli-aesc/aesc-cli/discussions)
+  </Card>
+  <Card title="CI/CD" icon="circle-check">
+    [GitHub Actions](https://github.com/akaeli-aesc/aesc-cli/actions)
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Contributing"
+    icon="hand-holding-heart"
+    href="/advanced/contributing"
+  >
+    Contribution guidelines
+  </Card>
+  <Card
+    title="Architecture"
+    icon="sitemap"
+    href="/advanced/architecture"
+  >
+    System architecture overview
+  </Card>
+  <Card
+    title="Tools API"
+    icon="wrench"
+    href="/api-reference/tools"
+  >
+    Tool development reference
+  </Card>
+  <Card
+    title="Agents API"
+    icon="robot"
+    href="/api-reference/agents"
+  >
+    Agent customization
+  </Card>
+</CardGroup>

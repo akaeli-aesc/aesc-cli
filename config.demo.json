@@ -1,0 +1,18 @@
+{
+  "default_model": "demo-custom",
+  "models": {
+    "demo-custom": {
+      "provider": "custom",
+      "model": "REPLACE_WITH_YOUR_MODEL_NAME",
+      "max_context_size": 200000,
+      "capabilities": ["thinking"]
+    }
+  },
+  "providers": {
+    "custom": {
+      "type": "litellm",
+      "base_url": "REPLACE_WITH_YOUR_API_ENDPOINT",
+      "api_key": "REPLACE_WITH_YOUR_API_KEY"
+    }
+  }
+}

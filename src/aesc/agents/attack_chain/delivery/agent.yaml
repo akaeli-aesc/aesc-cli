@@ -1,0 +1,117 @@
+version: 1
+agent:
+  name: "delivery_agent"
+
+  system_prompt_path: ./system.md
+
+  system_prompt_args:
+    STAGE: "Delivery"
+    STAGE_NUMBER: "3"
+    FOCUS: "Deliver weaponized payloads to target systems and establish initial access"
+
+  tools:
+    - "aesc.tools.bash:Bash"
+    - "aesc.tools.file:ReadFile"
+    - "aesc.tools.file:WriteFile"
+    - "aesc.tools.file:Glob"
+    - "aesc.tools.file:Grep"
+    - "aesc.tools.mitre_attack:MitreAttack"
+    - "aesc.tools.kali_docs:KaliDocs"
+    - "aesc.tools.web:SearchWeb"
+    - "aesc.tools.web:FetchURL"
+    - "aesc.tools.think:Think"
+    - "aesc.tools.todo:SetTodoList"
+    # Results tools for agent communication
+    - "aesc.tools.results:WriteFinding"
+    - "aesc.tools.results:WriteDecision"
+    - "aesc.tools.results:ReadGuidance"
+
+  exclude_tools: []
+
+  metadata:
+    stage: 3
+    stage_name: "Delivery"
+    phase: "IN"
+
+    description: |
+      Red Team delivery specialist responsible for transmitting weaponized
+      payloads to target systems and establishing initial access. Covers
+      MITRE ATT&CK tactic TA0001 (Initial Access).
+
+    mitre_tactics:
+      - "TA0001"  # Initial Access
+
+    primary_techniques:
+      network_exploitation:
+        - "T1190"  # Exploit Public-Facing Application
+        - "T1133"  # External Remote Services
+        - "T1210"  # Exploitation of Remote Services
+
+      social_engineering:
+        - "T1566"      # Phishing
+        - "T1566.001"  # Spearphishing Attachment
+        - "T1566.002"  # Spearphishing Link
+        - "T1566.003"  # Spearphishing via Service
+        - "T1598"      # Phishing for Information
+
+      web_based:
+        - "T1189"  # Drive-by Compromise
+        - "T1195"  # Supply Chain Compromise
+        - "T1195.002"  # Compromise Software Supply Chain
+
+      other_vectors:
+        - "T1091"  # Replication Through Removable Media
+        - "T1200"  # Hardware Additions
+        - "T1199"  # Trusted Relationship
+        - "T1078"  # Valid Accounts
+
+    capabilities:
+      network_delivery:
+        - "Web application exploitation"
+        - "SQL injection"
+        - "Remote code execution"
+        - "File upload vulnerabilities"
+        - "Command injection"
+        - "Deserialization attacks"
+
+      listener_management:
+        - "Metasploit multi/handler"
+        - "Netcat listeners"
+        - "Socat tunneling"
+        - "Reverse shell catching"
+        - "Callback verification"
+
+      phishing_simulation:
+        - "Email crafting"
+        - "Malicious document creation"
+        - "Link spoofing"
+        - "Payload delivery via email"
+
+    tools_reference:
+      exploitation:
+        - "Metasploit"
+        - "sqlmap"
+        - "Burp Suite"
+        - "OWASP ZAP"
+        - "Nikto"
+        - "curl/wget"
+
+      listeners:
+        - "msfconsole (multi/handler)"
+        - "netcat (nc)"
+        - "socat"
+        - "pwncat"
+        - "rlwrap"
+
+      phishing:
+        - "GoPhish"
+        - "SET (Social Engineering Toolkit)"
+        - "King Phisher"
+
+    output_format:
+      structure:
+        - "delivery_method"
+        - "initial_access_achieved"
+        - "session_details"
+        - "callback_verification"
+        - "mitre_techniques_used"

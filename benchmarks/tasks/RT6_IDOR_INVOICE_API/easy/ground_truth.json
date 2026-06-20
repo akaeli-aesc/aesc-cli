@@ -1,0 +1,6 @@
+{
+  "endpoints": ["/api/v1/invoices/2002"],
+  "secrets": ["inv_release_key_2025_12_17_demo"],
+  "vulns": ["idor"]
+}
+

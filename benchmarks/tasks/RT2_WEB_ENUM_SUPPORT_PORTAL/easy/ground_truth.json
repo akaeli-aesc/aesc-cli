@@ -1,0 +1,14 @@
+{
+  "endpoints": [
+    "/",
+    "/login",
+    "/logout",
+    "/dashboard",
+    "/admin",
+    "/healthz",
+    "/api/v1/status",
+    "/api/v1/tickets",
+    "/download",
+    "/static/app.js"
+  ]
+}
