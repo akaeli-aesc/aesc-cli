@@ -84,7 +84,7 @@ If you discover security vulnerabilities using aesc, please follow responsible d
 
 ## Contact
 
-For questions about this legal notice, contact: legal@akaeli.com
+For questions about this legal notice, contact: legal@akæli.com
 
 ---
 

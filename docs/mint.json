@@ -45,14 +45,9 @@
   ],
   "anchors": [
     {
-      "name": "Community",
-      "icon": "discord",
-      "url": "https://discord.gg/akaeli"
-    },
-    {
       "name": "Blog",
       "icon": "newspaper",
-      "url": "https://akaeli.com/blog"
+      "url": "https://akæli.com/blog"
     }
   ],
   "navigation": [
@@ -102,9 +97,7 @@
     }
   ],
   "footerSocials": {
-    "github": "https://github.com/akaeli-aesc",
-    "twitter": "https://twitter.com/akaeli_dev",
-    "linkedin": "https://linkedin.com/company/akaeli"
+    "github": "https://github.com/akaeli-aesc"
   },
   "feedback": {
     "thumbsRating": true,

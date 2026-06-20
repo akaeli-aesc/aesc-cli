@@ -116,5 +116,5 @@ body:
     attributes:
       label: Security Considerations
       options:
-        - label: This bug has security implications (if yes, please email open-dev@akæli.com instead)
+        - label: This bug has security implications (if yes, please email dev@akæli.com instead)
           required: false

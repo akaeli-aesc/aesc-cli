@@ -4,7 +4,7 @@ AI-powered security assistant for daily security operations.
 
 Ask questions, run tools, automate workflows — in your terminal.
 
-**by [akæli](https://akaeli.com)** | Open source | Privacy first
+**by [akæli](https://akæli.com)** | Open source | Privacy first
 
 [![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/akaeli-aesc/aesc-cli/releases)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](LICENSE)
@@ -13,7 +13,7 @@ Ask questions, run tools, automate workflows — in your terminal.
 [![Docker](https://img.shields.io/badge/docker-ghcr.io-blue)](https://github.com/akaeli-aesc/aesc-cli/pkgs/container/aesc-cli)
 [![Security](https://img.shields.io/badge/security-policy-red)](SECURITY.md)
 
-**🔗 [akæli](https://akaeli.com)** — open-source AI security agent CLI
+**🔗 [akæli](https://akæli.com)** — open-source AI security agent CLI
 
 ## What can you do with aesc?
 
@@ -313,18 +313,19 @@ cd /path/to/target && aesc -c "analyze this project"
 
 ### Security Tools (via Kali Linux) 🐧
 
-aesc runs inside Kali Linux with access to its security tools via the bash tool:
+aesc runs on a Kali Linux base image with a curated set of essential security tools pre-installed, available through the bash tool:
 
-- **nmap** - Network discovery and security auditing
-- **sqlmap** - Automatic SQL injection detection
+- **nmap** & **masscan** - Network discovery and port scanning
+- **sqlmap** & **wpscan** - SQL injection and WordPress testing
 - **metasploit** - Penetration testing framework
-- **gobuster** - Directory/file/DNS enumeration
-- **nikto** - Web server scanner
-- **burpsuite** - Web vulnerability scanner
-- **hydra** - Brute force tool
-- **john** - Password cracker
-- **wireshark** - Network protocol analyzer
-- And the rest of Kali's toolset...
+- **gobuster**, **dirb**, **ffuf**, **wfuzz** - Directory and content discovery
+- **nikto** & **whatweb** - Web server scanning and fingerprinting
+- **hydra** - Brute force / password attacks
+- **john** & **hashcat** - Password cracking
+- **tcpdump** - Network traffic capture
+- **enum4linux**, **smbclient**, **crackmapexec**, **binwalk** - Enumeration and analysis
+
+The full Kali repositories are available, so any other tool is one `apt install` away.
 
 Currently accessed via the `bash` tool. Native integrations coming in future releases.
 
@@ -540,7 +541,7 @@ aesc is forked from [Kimi-CLI](https://github.com/MoonshotAI/kimi-cli) by Moonsh
 - LLM abstraction layer
 - Built-in approval system
 
-**aesc additions by akaeli:**
+**aesc additions by akæli:**
 - Security tool integrations
 - Kali Linux optimization
 - Security-focused workflows
@@ -558,7 +559,7 @@ Special thanks to the Kimi-CLI team for building a solid foundation.
 
 ## Links
 
-- **Website:** https://akaeli.com
+- **Website:** https://akæli.com
 - **Repository:** https://github.com/akaeli-aesc/aesc-cli
 - **Docker Images:** https://github.com/akaeli-aesc/aesc-cli/pkgs/container/aesc-cli
 - **Releases:** https://github.com/akaeli-aesc/aesc-cli/releases
@@ -567,7 +568,7 @@ Special thanks to the Kimi-CLI team for building a solid foundation.
 
 ---
 
-**Built by [akaeli](https://akaeli.com) for the security community**
+**Built by [akæli](https://akæli.com) for the security community**
 
 *aesc - AI-powered security agent for ethical hackers*
 

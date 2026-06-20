@@ -2,7 +2,7 @@
 
 ## Our Commitment
 
-At akaeli, security and privacy are core to everything we build. aesc is designed for authorized security testing, and we take the security of our tools seriously.
+At akæli, security and privacy are core to everything we build. aesc is designed for authorized security testing, and we take the security of our tools seriously.
 
 ## Supported Versions
 
@@ -16,7 +16,7 @@ We appreciate responsible disclosure of security vulnerabilities.
 
 ### How to Report
 
-**Email:** open-dev@akæli.com
+**Email:** dev@akæli.com
 **PGP Key:** *(coming soon)*
 
 **Please include:**
@@ -57,7 +57,7 @@ We maintain a security researchers hall of fame for responsible disclosures. Wit
 
 - Release notes
 - Security advisories
-- Our website (https://akaeli.com)
+- Our website (https://akæli.com)
 
 ## Security Best Practices
 
@@ -103,7 +103,7 @@ Published security advisories: https://github.com/akaeli-aesc/aesc-cli/security/
 
 For non-security issues, use GitHub Issues: https://github.com/akaeli-aesc/aesc-cli/issues
 
-For security concerns only: open-dev@akæli.com
+For security concerns only: dev@akæli.com
 
 ---
 

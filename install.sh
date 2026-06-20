@@ -1,6 +1,6 @@
 #!/bin/bash
 # aesc One-Line Installer
-# Usage: curl -fsSL akaeli.com/install.sh | bash
+# Usage: curl -fsSL xn--akli-woa.com/install.sh | bash
 
 set -e
 
@@ -61,9 +61,9 @@ AESC_BIN="$INSTALL_DIR/aesc"
 echo ""
 echo -e "${BLUE}📥 Downloading aesc CLI...${NC}"
 if command -v curl &> /dev/null; then
-    curl -fsSL akaeli.com/aesc -o "$AESC_BIN"
+    curl -fsSL xn--akli-woa.com/aesc -o "$AESC_BIN"
 elif command -v wget &> /dev/null; then
-    wget -q akaeli.com/aesc -O "$AESC_BIN"
+    wget -q xn--akli-woa.com/aesc -O "$AESC_BIN"
 else
     echo -e "${RED}Error: Neither curl nor wget found${NC}"
     exit 1
