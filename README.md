@@ -1,10 +1,8 @@
 # aesc
 
-AI-powered security assistant for daily security operations.
+An AI security agent for the terminal: describe the task in plain English, aesc runs the tools, and you approve every action.
 
-Ask questions, run tools, automate workflows — in your terminal.
-
-**by [akæli](https://akæli.com)** | Open source | Privacy first
+**by [akæli](https://akæli.com)**
 
 [![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/akaeli-aesc/aesc-cli/releases)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](LICENSE)
@@ -12,8 +10,6 @@ Ask questions, run tools, automate workflows — in your terminal.
 [![Python](https://img.shields.io/badge/python-3.13%2B-blue)](https://www.python.org/downloads/)
 [![Docker](https://img.shields.io/badge/docker-ghcr.io-blue)](https://github.com/akaeli-aesc/aesc-cli/pkgs/container/aesc-cli)
 [![Security](https://img.shields.io/badge/security-policy-red)](SECURITY.md)
-
-**🔗 [akæli](https://akæli.com)** — open-source AI security agent CLI
 
 ## What can you do with aesc?
 
@@ -50,9 +46,7 @@ aesc -c "Run our standard external assessment methodology"
 
 aesc is an AI-powered CLI agent for security professionals. Describe what you need in plain English, aesc executes the methodology, you approve every action.
 
-**Current Release:** v0.1.0 - First public release with core functionality
-
-**Why "aesc"?** Short, memorable, and CLI-friendly. A simple, powerful name for a security tool.
+**Current release:** v0.1.0 — first public release.
 
 ## ⚠️ Security Notice
 
@@ -67,8 +61,6 @@ aesc is an AI-powered CLI agent for security professionals. Describe what you ne
 - ❌ Scan systems without permission
 - ❌ Use for illegal activities
 - ❌ Auto-approve on untrusted targets (`--yolo` is dangerous!)
-
-**aesc is a powerful tool. Use it responsibly.**
 
 See our [Security Policy](SECURITY.md) for vulnerability reporting.
 
